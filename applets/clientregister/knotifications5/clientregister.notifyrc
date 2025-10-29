@@ -1,0 +1,33 @@
+[Global]
+IconName=client_register
+Comment=Client Register
+Comment[ca@valencia]=Client Register
+Comment[ca]=Client Register
+Comment[es]=Client Register
+
+[Event/Set]
+Name=Client Register activated
+Name[ca@valencia]=Client Register activat
+Name[ca]=Client Register activat
+Name[es]=Client Register activado
+
+Comment=Occurs when Client Register is activated
+Comment[ca@valencia]=Ocorre quan s'activa el Client Register
+Comment[ca]=Ocorre quan s'activa el Client Register
+Comment[es]=Ocurre cuando se activa el Client Register
+Action=Popup
+Urgency=Normal
+
+[Event/Unset]
+Name= Client Register disabled
+Name[ca@valencia]=Client Register desactivat
+Name[ca]=Client Register desactivat
+Name[es]=Client Register desactivado
+
+Comment=Occurs when Client Register is disabled
+Comment[ca@valencia]=Ocorre quan es desactiva el Client Register
+Comment[ca]=Ocorre quan es desactiva el Client Register
+Comment[es]=Ocurre cuando se desactiva el Client Register
+Action=Popup
+Urgency=Normal
+

@@ -1,0 +1,43 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the clientregister package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: clientregister \n"
+"Report-Msgid-Bugs-To: http://lliurex.net\n"
+"POT-Creation-Date: 2025-10-29 17:46+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../applets/clientregister/package/contents/ui/main.qml:44 ../applets/clientregister/package/contents/ui/main.qml:69
+#, kde-format
+msgid "Change assigned cart"
+msgstr ""
+
+#: ../applets/clientregister/package/contents/ui/main.qml:45
+#, kde-format
+msgid "See help"
+msgstr ""
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:33
+#, kde-format
+msgid "Client Register"
+msgstr ""
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:109
+#, kde-format
+msgid "Laptop assigned to cart number: "
+msgstr ""
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:125
+#, kde-format
+msgid "Client-Register not available in this computer"
+msgstr ""
