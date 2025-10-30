@@ -91,6 +91,7 @@ void ClientRegisterWidget::updateInfo(){
         bool disable=false;
         bool canCreateWatcher=false;
         bool error=false;
+        showNotification=true;
        
         if (TARGET_FILE.exists()){
             qDebug()<<"[CLIENT_REGISTER]: Updating info...";
@@ -128,12 +129,8 @@ void ClientRegisterWidget::updateInfo(){
                 firstRun=true;
             }else{
                 testConnection();
-                if (showNotification){
-                    m_notification=KNotification::event(QStringLiteral("Set"),notificationBody,notificationServerBody,tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
-                }         
                 changeTryIconState(0);
                 setCanEdit(true);
-                showNotification=true;
                 isWorking=false;
             }
         }else{
@@ -251,8 +248,10 @@ void ClientRegisterWidget::updateConnectionFeedbak()
     }
     setIconName(tmpIcon);
     setSubToolTip(notificationBody+"\n"+notificationServerBody); 
-
-
+    
+    if (showNotification){
+        m_notification=KNotification::event(QStringLiteral("Set"),notificationBody,notificationServerBody,tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
+    }
 }
 
 void ClientRegisterWidget::setStatus(ClientRegisterWidget::TrayStatus status)

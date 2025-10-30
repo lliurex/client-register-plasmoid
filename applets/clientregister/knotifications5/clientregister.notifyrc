@@ -13,7 +13,7 @@ Name[es]=Client Register actualizado
 
 Comment=Occurs when assigned cart is changed
 Comment[ca@valencia]=Ocorre quan es canvia el carret assignat
-Comment[ca]Ocorre quan es canvia el carret assignat
+Comment[ca]=Ocorre quan es canvia el carret assignat
 Comment[es]=Ocurre cuando se cambia el carrito asignado
 Action=Popup
 Urgency=Normal
