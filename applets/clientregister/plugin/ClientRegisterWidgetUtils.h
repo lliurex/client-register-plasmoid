@@ -27,7 +27,7 @@ public:
    void cleanCache();
    QVariantList getCurrentCart();
    bool showWidget();
-   bool isClientRegisterAvailable();
+   QVariantList isClientRegisterAvailable();
 
    QString user;
    QString clientRegisterVar="/var/lib/n4d/variables/CONTROLLED_CLASSROOM";
@@ -38,8 +38,6 @@ private:
     n4d::Client client;
     QFile TARGET_FILE;
     QString getInstalledVersion();
-    bool getHideAppletValue();
-
      
 };
 

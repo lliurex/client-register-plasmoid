@@ -101,29 +101,37 @@ bool ClientRegisterWidgetUtils::showWidget(){
     return true; 
 }   
 
-bool ClientRegisterWidgetUtils::isClientRegisterAvailable(){
+QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
 
-    TARGET_FILE.setFileName("/usr/bin/natfree-tie");
     bool isAvailable=false;
+    bool isError=false;
+    QVariantList result;
+
+    TARGET_FILE.setFileName(natfreeTie);
 
     if (TARGET_FILE.exists()){
-        if (!getHideAppletValue()){
-            TARGET_FILE.setFileName(clientRegisterVar);
-            if (TARGET_FILE.exists()){
-                QVariantList ret=getCurrentCart();
-                if (!ret[0].toBool()){
-                    if (ret[1].toInt()==0){
-                        isAvailable=false;
-                    }else{
+        TARGET_FILE.setFileName(clientRegisterVar);
+        if (TARGET_FILE.exists()){
+            QVariantList ret=getCurrentCart();
+            if (!ret[0].toBool()){
+                if (ret[1].toInt()==0){
+                    isAvailable=false;
+                }else{
+                    if (ret[1].toInt()>0){
                         isAvailable=true;
                     }
                 }
+            }else{
+                isAvailable=true;
+                isError=true;
             }
         }
     }
-    
+    result.append(isAvailable);
+    result.append(isError);
+
     qDebug()<<"[CLIENT_REGISTER]: Client Register Available: "<<isAvailable;
-    return isAvailable;
+    return result;
 
 }
 
@@ -154,32 +162,5 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
    result.append(isError);
    result.append(numCart);
    return result;
-
-}
-
-bool ClientRegisterWidgetUtils::getHideAppletValue(){
-
-    bool hideApplet=false;
-
-    TARGET_FILE.setFileName(clientRegisterVar);
-
-    if (TARGET_FILE.exists()){
-        try{
-            variant::Variant appletInfo = client.get_variable("CONTROLLED_CLASSROOM",true);
-            int currentValue=appletInfo["value"];
-            if (currentValue==0){
-                hideApplet=true;
-            }
-            qDebug()<<"[CLIENT_REGISTER]: Reading CONTROLLED_CLASSROOM var: "<<QString::number(currentValue);
-        }catch (std::exception& e){
-            qDebug()<<"[CLIENT_REGISTER]: Error reading CONTROLLED_CLASSROOM var: " <<e.what();
-            hideApplet=false;
-        } 
-   }else{
-        hideApplet=true;
-   }
-   
-   return hideApplet;
-
 
 }

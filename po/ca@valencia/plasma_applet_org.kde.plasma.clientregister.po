@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2025-10-29 17:46+0100\n"
-"PO-Revision-Date: 2025-10-29 17:47+0100\n"
+"POT-Creation-Date: 2025-10-30 10:12+0100\n"
+"PO-Revision-Date: 2025-10-30 10:13+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -18,9 +18,9 @@ msgstr ""
 "X-Generator: Poedit 3.0.1\n"
 
 #: ../applets/clientregister/package/contents/ui/main.qml:44
-#: ../applets/clientregister/package/contents/ui/main.qml:69
+#: ../applets/clientregister/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Change assigned cart"
+msgid "Change cart"
 msgstr ""
 
 #: ../applets/clientregister/package/contents/ui/main.qml:45
@@ -28,17 +28,27 @@ msgstr ""
 msgid "See help"
 msgstr "Vore l'ajuda"
 
+#: ../applets/clientregister/package/contents/ui/main.qml:73
+#, kde-format
+msgid "Test connection with ADI"
+msgstr ""
+
 #: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:33
 #, kde-format
 msgid "Client Register"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:109
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:129
 #, kde-format
 msgid "Laptop assigned to cart number: "
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:125
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:150
 #, kde-format
 msgid "Client-Register not available in this computer"
+msgstr ""
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:162
+#, kde-format
+msgid "Unable to get cart assigned to laptop"
 msgstr ""

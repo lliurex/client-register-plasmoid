@@ -6,28 +6,28 @@ Comment[ca]=Client Register
 Comment[es]=Client Register
 
 [Event/Set]
-Name=Client Register activated
-Name[ca@valencia]=Client Register activat
-Name[ca]=Client Register activat
-Name[es]=Client Register activado
+Name=Client Register updated
+Name[ca@valencia]=Client Register actualitzat
+Name[ca]=Client Register actualitzat
+Name[es]=Client Register actualizado
 
-Comment=Occurs when Client Register is activated
-Comment[ca@valencia]=Ocorre quan s'activa el Client Register
-Comment[ca]=Ocorre quan s'activa el Client Register
-Comment[es]=Ocurre cuando se activa el Client Register
+Comment=Occurs when assigned cart is changed
+Comment[ca@valencia]=Ocorre quan es canvia el carret assignat
+Comment[ca]Ocorre quan es canvia el carret assignat
+Comment[es]=Ocurre cuando se cambia el carrito asignado
 Action=Popup
 Urgency=Normal
 
-[Event/Unset]
-Name= Client Register disabled
-Name[ca@valencia]=Client Register desactivat
-Name[ca]=Client Register desactivat
-Name[es]=Client Register desactivado
+[Event/Error]
+Name= Client Register error
+Name[ca@valencia]=Error en Client Register
+Name[ca]=Error en Client Register
+Name[es]=Error en Client Register
 
-Comment=Occurs when Client Register is disabled
-Comment[ca@valencia]=Ocorre quan es desactiva el Client Register
-Comment[ca]=Ocorre quan es desactiva el Client Register
-Comment[es]=Ocurre cuando se desactiva el Client Register
+Comment=Occurs when an error occurs while queryring the assigned cart
+Comment[ca@valencia]=Ocorre quan es produïx un error en consultar el carret assignat
+Comment[ca]=Ocorre quan es produïx un error en consultar el carret assignat
+Comment[es]=Ocurre cuando se produce un error al consultar el carrito asignado
 Action=Popup
 Urgency=Normal
 

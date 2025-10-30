@@ -41,7 +41,7 @@ Item {
 
     Component.onCompleted: {
        plasmoid.removeAction("configure");
-       plasmoid.setAction("launchGui",i18n("Change assigned cart"),"lliurex-client-register")
+       plasmoid.setAction("launchGui",i18n("Change cart"),"liurex-client-register")
        plasmoid.setAction("openHelp",i18n("See help"),"help-contents")
     }
 
@@ -58,17 +58,31 @@ Item {
             iconName: Plasmoid.icon
             text:Plasmoid.toolTipSubText
         }
-
-        PC3.Button {
-            height:35
+        RowLayout{
+            id:btnLayout
             anchors.top:phMsg.bottom
-            anchors.horizontalCenter:phMsg.horizontalCenter
-            visible:clientRegisterWidget.canEdit?true:false
-            display:AbstractButton.TextBesideIcon
-            icon.name:"lliurex-client-register"
-            text:i18n("Change assigned cart")
- 
-            onClicked:clientRegisterWidget.launchGui()
+            anchors.horizontalCenter:parent.horizontalCenter
+            spacing:15
+
+            PC3.Button {
+                id:testBtn
+                height:35
+                visible:clientRegisterWidget.canEdit?true:false
+                display:AbstractButton.TextBesideIcon
+                icon.name:"view-refresh"
+                text:i18n("Test connection with ADI")
+                onClicked:clientRegisterWidget.testConnection()
+            }
+
+            PC3.Button {
+                id:editBtn
+                height:35
+                visible:clientRegisterWidget.canEdit?true:false
+                display:AbstractButton.TextBesideIcon
+                icon.name:"lliurex-client-register"
+                text:i18n("Change cart")
+                onClicked:clientRegisterWidget.launchGui()
+            }
         } 
     }
 

@@ -65,5 +65,7 @@ install(FILES "icons/client_register_cart_15.svg"
         DESTINATION ${DATAROOTDIR}/usr/share/icons/hicolor/scalable/apps/)
 install(FILES "icons/client_register_warning.svg"
         DESTINATION ${DATAROOTDIR}/usr/share/icons/hicolor/scalable/apps/)
+install(FILES "icons/client_register_error.svg"
+        DESTINATION ${DATAROOTDIR}/usr/share/icons/hicolor/scalable/apps/)
 install(FILES "knotifications5/clientregister.notifyrc"
        DESTINATION ${DATAROOTDIR}/usr/share/knotifications5/)

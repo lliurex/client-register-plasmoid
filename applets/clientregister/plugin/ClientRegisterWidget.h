@@ -78,6 +78,7 @@ public slots:
     void updateInfo();
     void launchGui();
     void openHelp();
+    void testConnection();
   
 signals:
    
@@ -115,6 +116,7 @@ private:
     void plasmoidMode();
     void createWatcher();
     void disableApplet();
+    void showError();
 
 };
 

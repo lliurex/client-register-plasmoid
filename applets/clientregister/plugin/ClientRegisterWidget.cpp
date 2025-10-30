@@ -44,11 +44,17 @@ void ClientRegisterWidget::plasmoidMode(){
         if (TARGET_FILE.exists()){
             createWatcher();
         }
-        if (m_utils->isClientRegisterAvailable()){
-            updateInfo();
-    	}else{
+        QVariantList ret=m_utils->isClientRegisterAvailable();
+        if (ret[0].toBool()){
+            if (!ret[1].toBool()){
+                updateInfo();
+            }else{
+                showError();
+            }
+        }else{
             disableApplet();
-    	}
+        }
+        
     }else{
         setCanEdit(false);
         changeTryIconState(1);
@@ -78,42 +84,61 @@ void ClientRegisterWidget::updateInfo(){
         isWorking=true;
         bool enable=false;
         bool disable=false;
+        bool canCreateWatcher=false;
+        bool error=false;
        
         if (TARGET_FILE.exists()){
             qDebug()<<"[CLIENT_REGISTER]: Updating info...";
             QVariantList ret=m_utils->getCurrentCart();
             initCart=ret[1].toInt();
-
-            if (initCart==0){
-                disable=true;
-            }else{
-                if (initCart>0){
-                    enable=true;
+            if (!ret[0].toBool()){
+                if (initCart==0){
+                    disable=true;
+                }else{
+                    if (initCart>0){
+                        enable=true;
+                    }else{
+                        if (initCart<1){
+                            disable=true;
+                        }
+                    }
+                    canCreateWatcher=true;
                 }
+            }else{
+                canCreateWatcher=true;
+                error=true;
+            }
+            if (canCreateWatcher){
                 createWatcher();
             }
         }else{
             disable=true;
         }
 
-        if (disable){
-            disableApplet();
-            isWorking=false;
+        if (!error){
+            if (disable){
+                disableApplet();
+                isWorking=false;
+            }else{
+                /*title=i18n("Client Register Enabled");*/
+                QString cart=QString::number(initCart);
+                QString tmpIcon="client_register_cart_";
+                tmpIcon.append(QString("%1").arg(cart));
+                setIconName(tmpIcon);
+                setIconNamePh("client_cart");
+                notificationBody=i18n("Laptop assigned to cart number: ")+cart;
+                setSubToolTip(notificationBody); 
+                if (showNotification){
+                    m_notification=KNotification::event(QStringLiteral("Set"),notificationBody,"",tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
+                }         
+            
+                changeTryIconState(0);
+                setCanEdit(true);
+                showNotification=true;
+                isWorking=false;
+            }
         }else{
-            /*title=i18n("Client Register Enabled");*/
-            QString cart=QString::number(initCart);
-            QString tmpIcon="client_register_cart_";
-            tmpIcon.append(QString("%1").arg(cart));
-            setIconName(tmpIcon);
-            setIconNamePh("client_cart");
-            notificationBody=i18n("Laptop assigned to cart number: ")+cart;
-            setSubToolTip(notificationBody); 
-            if (showNotification){
-                m_notification=KNotification::event(QStringLiteral("Set"),title,notificationBody,tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
-            }         
-        
-            changeTryIconState(0);
-            setCanEdit(true);
+            showError();
             showNotification=true;
             isWorking=false;
         }
@@ -129,6 +154,19 @@ void ClientRegisterWidget::disableApplet(){
     setIconNamePh("client_register");
     setSubToolTip(notificationBody);
     changeTryIconState(1);
+
+}
+
+void ClientRegisterWidget::showError(){
+
+    notificationBody=i18n("Unable to get cart assigned to laptop");
+    QString tmpIcon="client_register_error";
+    setCanEdit(true);
+    setIconName(tmpIcon);
+    setIconNamePh(tmpIcon);
+    setSubToolTip(notificationBody);
+    changeTryIconState(0);
+    m_notification=KNotification::event(QStringLiteral("Error"),notificationBody,"",tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
 
 }
 
@@ -156,12 +194,18 @@ void ClientRegisterWidget::launchGui()
     job->start();
 }
 
-void ClientRegisterWidget::openHelp(){
+void ClientRegisterWidget::openHelp()
+{
 
     QString command="xdg-open https://wiki.edu.gva.es/lliurex";
     KIO::CommandLauncherJob *job = nullptr;
     job = new KIO::CommandLauncherJob(command);
     job->start();
+}
+
+void ClientRegisterWidget::testConnection()
+{
+    qDebug()<<"TESTING CONNECTION WITH ADI";
 }
 
 void ClientRegisterWidget::setStatus(ClientRegisterWidget::TrayStatus status)
