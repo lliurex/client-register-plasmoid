@@ -164,3 +164,19 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
    return result;
 
 }
+
+bool ClientRegisterWidgetUtils::isThereConnectionWithADI()
+{
+    bool isConnected=false;
+
+    try{
+        variant::Variant ret=client.call("ClientRegisterManager","test_connection_adi");
+        isConnected=ret;
+        qDebug()<<"[CLIENT_REGISTER]: Test connection. ResultT: "<<isConnected;
+        return isConnected;
+    }catch(std::exception& e){
+        qDebug()<<"[CLIENT_REGISTER]: TEST connection error"<<e.what();
+        return isConnected;
+    }
+
+}

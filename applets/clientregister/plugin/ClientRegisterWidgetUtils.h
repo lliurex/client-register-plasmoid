@@ -28,6 +28,7 @@ public:
    QVariantList getCurrentCart();
    bool showWidget();
    QVariantList isClientRegisterAvailable();
+   bool isThereConnectionWithADI();
 
    QString user;
    QString clientRegisterVar="/var/lib/n4d/variables/CONTROLLED_CLASSROOM";

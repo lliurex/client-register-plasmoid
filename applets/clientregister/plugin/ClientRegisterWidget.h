@@ -93,6 +93,7 @@ signals:
 
 private:
 
+    QTimer *m_timer = nullptr;
     TrayStatus m_status = PassiveStatus;
     QString m_iconName = QStringLiteral("client_register");
     QString m_iconNamePh = QStringLiteral("client_register");
@@ -102,9 +103,14 @@ private:
     bool isWorking=false;
     bool m_showWaitMsg=false;
     bool m_canEdit=false;
+    bool checkingConnection=false;
+    bool connectedWithServer=false;
     int initCart=1;
     QString notificationTitle;
     QString notificationBody;
+    QString notificationServerBody;
+    QString tmpIcon;
+    bool firstRun=true;
     QString title;
     QFile TARGET_FILE;
     QFileSystemWatcher *watcher=nullptr;
@@ -117,6 +123,7 @@ private:
     void createWatcher();
     void disableApplet();
     void showError();
+    void updateConnectionFeedbak();
 
 };
 

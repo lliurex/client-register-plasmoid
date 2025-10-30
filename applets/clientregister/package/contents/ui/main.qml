@@ -55,7 +55,7 @@ Item {
             id:phMsg
             anchors.centerIn: parent
             width: parent.width - (PlasmaCore.Units.gridUnit * 4)
-            iconName: Plasmoid.icon
+            iconName: clientRegisterWidget.iconNamePh
             text:Plasmoid.toolTipSubText
         }
         RowLayout{

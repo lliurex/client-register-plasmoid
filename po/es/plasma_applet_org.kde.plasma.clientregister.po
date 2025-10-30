@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2025-10-30 10:12+0100\n"
-"PO-Revision-Date: 2025-10-30 10:13+0100\n"
+"POT-Creation-Date: 2025-10-30 14:23+0100\n"
+"PO-Revision-Date: 2025-10-30 14:25+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -33,22 +33,32 @@ msgstr "Ver ayuda"
 msgid "Test connection with ADI"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:33
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:35
 #, kde-format
 msgid "Client Register"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:129
-#, kde-format
-msgid "Laptop assigned to cart number: "
-msgstr ""
-
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:150
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:151
 #, kde-format
 msgid "Client-Register not available in this computer"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:162
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:163
 #, kde-format
 msgid "Unable to get cart assigned to laptop"
+msgstr ""
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:237
+#, kde-format
+msgid "Laptop assigned to cart number: "
+msgstr ""
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:242
+#, kde-format
+msgid "Connected with ADI"
+msgstr ""
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:249
+#, kde-format
+msgid "No connection to the ADI"
 msgstr ""

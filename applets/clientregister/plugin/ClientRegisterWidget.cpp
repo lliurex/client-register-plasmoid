@@ -27,11 +27,15 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
     : QObject(parent)
     , m_utils(new ClientRegisterWidgetUtils(this))
     , m_applyChanges(new QProcess(this))
+    , m_timer(new QTimer(this))
+
    
 {
     m_utils->cleanCache();
     notificationTitle=i18n("Client Register");
     TARGET_FILE.setFileName(m_utils->clientRegisterVar);
+    firstRun=true;
+    connect(m_timer, &QTimer::timeout, this, &ClientRegisterWidget::testConnection);
 
     setSubToolTip(notificationTitle);
     plasmoidMode();
@@ -47,6 +51,7 @@ void ClientRegisterWidget::plasmoidMode(){
         QVariantList ret=m_utils->isClientRegisterAvailable();
         if (ret[0].toBool()){
             if (!ret[1].toBool()){
+                m_timer->start(300000);
                 updateInfo();
             }else{
                 showError();
@@ -118,29 +123,25 @@ void ClientRegisterWidget::updateInfo(){
         if (!error){
             if (disable){
                 disableApplet();
+                m_timer->stop();
                 isWorking=false;
+                firstRun=true;
             }else{
-                /*title=i18n("Client Register Enabled");*/
-                QString cart=QString::number(initCart);
-                QString tmpIcon="client_register_cart_";
-                tmpIcon.append(QString("%1").arg(cart));
-                setIconName(tmpIcon);
-                setIconNamePh("client_cart");
-                notificationBody=i18n("Laptop assigned to cart number: ")+cart;
-                setSubToolTip(notificationBody); 
+                testConnection();
                 if (showNotification){
-                    m_notification=KNotification::event(QStringLiteral("Set"),notificationBody,"",tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
+                    m_notification=KNotification::event(QStringLiteral("Set"),notificationBody,notificationServerBody,tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
                 }         
-            
                 changeTryIconState(0);
                 setCanEdit(true);
                 showNotification=true;
                 isWorking=false;
             }
         }else{
+            m_timer->stop();
             showError();
             showNotification=true;
             isWorking=false;
+            firstRun=true;
         }
     }
 }
@@ -160,7 +161,7 @@ void ClientRegisterWidget::disableApplet(){
 void ClientRegisterWidget::showError(){
 
     notificationBody=i18n("Unable to get cart assigned to laptop");
-    QString tmpIcon="client_register_error";
+    tmpIcon="client_register_error";
     setCanEdit(true);
     setIconName(tmpIcon);
     setIconNamePh(tmpIcon);
@@ -205,7 +206,53 @@ void ClientRegisterWidget::openHelp()
 
 void ClientRegisterWidget::testConnection()
 {
-    qDebug()<<"TESTING CONNECTION WITH ADI";
+    bool updateWidget=false;
+
+    if (!checkingConnection){
+        checkingConnection=true;
+        bool ret=m_utils->isThereConnectionWithADI();
+
+        if (connectedWithServer != ret ){
+            connectedWithServer=ret;
+            updateWidget=true;
+            updateConnectionFeedbak();
+        }else{
+            if (firstRun){
+                updateWidget=true;
+            }
+        }
+
+        if (updateWidget){
+            firstRun=false;
+            updateConnectionFeedbak();
+         }
+
+         checkingConnection=false;
+    }
+}
+
+void ClientRegisterWidget::updateConnectionFeedbak()
+{
+    QString cart=QString::number(initCart);
+    notificationBody=i18n("Laptop assigned to cart number: ")+cart;
+
+    if (connectedWithServer){
+        tmpIcon="client_register_cart_";
+        tmpIcon.append(QString("%1").arg(cart));
+        notificationServerBody=i18n("Connected with ADI");
+        setSubToolTip(notificationBody+"\n"+notificationServerBody);
+        setIconNamePh("client_register_ok"); 
+  
+    }else{
+        tmpIcon="client_register_warning_cart_";
+        tmpIcon.append(QString("%1").arg(cart));
+        notificationServerBody=i18n("No connection to the ADI");
+        setIconNamePh("client_register_warning");
+    }
+    setIconName(tmpIcon);
+    setSubToolTip(notificationBody+"\n"+notificationServerBody); 
+
+
 }
 
 void ClientRegisterWidget::setStatus(ClientRegisterWidget::TrayStatus status)
