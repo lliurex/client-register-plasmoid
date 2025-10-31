@@ -34,7 +34,8 @@ class ClientRegisterWidget : public QObject
     Q_PROPERTY(QString iconNamePh READ iconNamePh NOTIFY iconNamePhChanged)
     Q_PROPERTY(int currentCart READ currentCart NOTIFY currentCartChanged)
     Q_PROPERTY(bool canEdit READ canEdit NOTIFY canEditChanged)
-    Q_PROPERTY(bool showWaitMsg READ showWaitMsg NOTIFY showWaitMsgChanged)
+    Q_PROPERTY(bool canTest READ canTest NOTIFY canTestChanged)
+    Q_PROPERTY(bool testInProgress READ testInProgress NOTIFY testInProgressChanged)
     Q_ENUMS(TrayStatus)
 
 public:
@@ -70,15 +71,18 @@ public:
     bool canEdit();
     void setCanEdit(bool);
 
-    bool showWaitMsg();
-    void setShowWaitMsg(bool);
+    bool canTest();
+    void setCanTest(bool);
+
+    bool testInProgress();
+    void setTestInProgress(bool);
 
 public slots:
     
     void updateInfo();
     void launchGui();
     void openHelp();
-    void testConnection();
+    void launchTest();
   
 signals:
    
@@ -89,7 +93,8 @@ signals:
     void statusChanged();
     void currentCartChanged();
     void canEditChanged();
-    void showWaitMsgChanged();
+    void canTestChanged();
+    void testInProgressChanged();
 
 private:
 
@@ -101,8 +106,9 @@ private:
     QString m_subToolTip;
     int m_currentCart=0;
     bool isWorking=false;
-    bool m_showWaitMsg=false;
     bool m_canEdit=false;
+    bool m_canTest=false;
+    bool m_testInProgress=false;
     bool checkingConnection=false;
     bool connectedWithServer=false;
     int initCart=1;
@@ -111,19 +117,19 @@ private:
     QString notificationServerBody;
     QString tmpIcon;
     bool firstRun=true;
-    QString title;
+    bool updateWidget=true;
     QFile TARGET_FILE;
     QFileSystemWatcher *watcher=nullptr;
     ClientRegisterWidgetUtils* m_utils;
     bool createFileWatcher=false;
     bool showNotification=true; 
-    QProcess *m_applyChanges=nullptr;
     QPointer<KNotification> m_notification;
     void plasmoidMode();
     void createWatcher();
     void disableApplet();
     void showError();
-    void updateConnectionFeedbak();
+    void updateWidgetFeedbak();
+    void testConnection();
 
 };
 

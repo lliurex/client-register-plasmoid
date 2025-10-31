@@ -5,16 +5,16 @@ Comment[ca@valencia]=Client Register
 Comment[ca]=Client Register
 Comment[es]=Client Register
 
-[Event/Set]
-Name=Client Register updated
-Name[ca@valencia]=Client Register actualitzat
-Name[ca]=Client Register actualitzat
-Name[es]=Client Register actualizado
+[Event/Update]
+Name=Changes in Client Register
+Name[ca@valencia]=Canvis en Client Register
+Name[ca]=Canvis en Client Register
+Name[es]=Cambios en Client Register
 
-Comment=Occurs when assigned cart is changed
-Comment[ca@valencia]=Ocorre quan es canvia el carret assignat
-Comment[ca]=Ocorre quan es canvia el carret assignat
-Comment[es]=Ocurre cuando se cambia el carrito asignado
+Comment=Occurs when there is a change in the assigned cart or in the connection with the ADI
+Comment[ca@valencia]=Ocorre quan es produïx un canvi en el carret assignat o en la connexió amb l'ADI
+Comment[ca]=Ocorre quan es produïx un canvi en el carret assignat o en la connexió amb l'ADI
+Comment[es]=Ocurre cuando se produce un cambio en el carrito asignado o en la conexión con la ADI
 Action=Popup
 Urgency=Normal
 

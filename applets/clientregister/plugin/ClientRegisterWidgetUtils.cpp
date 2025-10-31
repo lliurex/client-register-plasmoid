@@ -140,13 +140,14 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
     bool isError=false;
     int numCart=0;
     QVariantList result;
+    variant::Variant cartInfo;
 
     try{
-        variant::Variant cartInfo = client.get_variable("CONTROLLED_CLASSROOM",true);
-        auto tmpCart=cartInfo["value"];
+        cartInfo = client.call("ClientRegisterManager","get_current_cart");
+        auto tmpCart=cartInfo["return"];
         
         if (tmpCart.size()>0){
-            numCart=cartInfo["value"];
+            numCart=cartInfo["return"];
             qDebug()<<"[CLIENT_REGISTER]: Reading CONTROLLED_CLASSROOM var: "<<QString::number(numCart);
         }else{
             numCart=0;
@@ -156,9 +157,8 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
     }catch (std::exception& e){
         qDebug()<<"[CLIENT_REGISTER]: Error reading CONTROLLED_CLASSROOM var: " <<e.what();
         isError=true;
+    }
 
-    } 
-   
    result.append(isError);
    result.append(numCart);
    return result;
@@ -172,10 +172,10 @@ bool ClientRegisterWidgetUtils::isThereConnectionWithADI()
     try{
         variant::Variant ret=client.call("ClientRegisterManager","test_connection_adi");
         isConnected=ret;
-        qDebug()<<"[CLIENT_REGISTER]: Test connection. ResultT: "<<isConnected;
+        qDebug()<<"[CLIENT_REGISTER]: Testing connection with ADI. Result: "<<isConnected;
         return isConnected;
     }catch(std::exception& e){
-        qDebug()<<"[CLIENT_REGISTER]: TEST connection error"<<e.what();
+        qDebug()<<"[CLIENT_REGISTER]: Testing connection with ADI. Error: "<<e.what();
         return isConnected;
     }
 

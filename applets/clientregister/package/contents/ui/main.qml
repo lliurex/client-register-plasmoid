@@ -41,7 +41,7 @@ Item {
 
     Component.onCompleted: {
        plasmoid.removeAction("configure");
-       plasmoid.setAction("launchGui",i18n("Change cart"),"liurex-client-register")
+       plasmoid.setAction("launchGui",i18n("Change cart"),"lliurex-client-register")
        plasmoid.setAction("openHelp",i18n("See help"),"help-contents")
     }
 
@@ -68,10 +68,17 @@ Item {
                 id:testBtn
                 height:35
                 visible:clientRegisterWidget.canEdit?true:false
+                enabled:{
+                    if ((clientRegisterWidget.canTest) && (!clientRegisterWidget.testInProgress)){
+                        true
+                    }else{
+                        false
+                    }
+                }
                 display:AbstractButton.TextBesideIcon
                 icon.name:"view-refresh"
-                text:i18n("Test connection with ADI")
-                onClicked:clientRegisterWidget.testConnection()
+                text:clientRegisterWidget.testInProgress?i18n("Running test..."):i18n("Test connection with ADI")
+                onClicked:clientRegisterWidget.launchTest()
             }
 
             PC3.Button {

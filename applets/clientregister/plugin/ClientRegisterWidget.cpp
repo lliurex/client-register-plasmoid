@@ -17,6 +17,9 @@
 #include <json.hpp>
 #include <QDebug>
 #include <KIO/CommandLauncherJob>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+
 
 using namespace edupals;
 using namespace std;
@@ -26,7 +29,6 @@ using namespace edupals::variant;
 ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
     : QObject(parent)
     , m_utils(new ClientRegisterWidgetUtils(this))
-    , m_applyChanges(new QProcess(this))
     , m_timer(new QTimer(this))
 
    
@@ -87,7 +89,6 @@ void ClientRegisterWidget::updateInfo(){
     if (!isWorking){
         qDebug()<<"[CLIENT_REGISTER]: Detecting changed in n4d vars directory";
         isWorking=true;
-        bool enable=false;
         bool disable=false;
         bool canCreateWatcher=false;
         bool error=false;
@@ -98,15 +99,11 @@ void ClientRegisterWidget::updateInfo(){
             QVariantList ret=m_utils->getCurrentCart();
             initCart=ret[1].toInt();
             if (!ret[0].toBool()){
-                if (initCart==0){
+                if (initCart<=0){
                     disable=true;
                 }else{
-                    if (initCart>0){
-                        enable=true;
-                    }else{
-                        if (initCart<1){
-                            disable=true;
-                        }
+                    if (initCart>14){
+                        disable=true;
                     }
                     canCreateWatcher=true;
                 }
@@ -129,8 +126,12 @@ void ClientRegisterWidget::updateInfo(){
                 firstRun=true;
             }else{
                 testConnection();
+                if (!updateWidget){
+                    updateWidgetFeedbak();
+                }
                 changeTryIconState(0);
                 setCanEdit(true);
+                setCanTest(true);
                 isWorking=false;
             }
         }else{
@@ -145,9 +146,10 @@ void ClientRegisterWidget::updateInfo(){
 
 void ClientRegisterWidget::disableApplet(){
 
-    notificationBody=i18n("Client-Register not available in this computer");
+    notificationBody=i18n("Client Register not available in this computer");
    
     setCanEdit(false);
+    setCanTest(false);
     setIconName("client_register");
     setIconNamePh("client_register");
     setSubToolTip(notificationBody);
@@ -155,11 +157,90 @@ void ClientRegisterWidget::disableApplet(){
 
 }
 
+void ClientRegisterWidget::launchGui()
+{
+    KIO::CommandLauncherJob *job = nullptr;
+    QString cmd="lliurex-client-register";
+    job = new KIO::CommandLauncherJob(cmd);
+    job->start();
+}
+
+void ClientRegisterWidget::openHelp()
+{
+
+    QString command="xdg-open https://wiki.edu.gva.es/lliurex";
+    KIO::CommandLauncherJob *job = nullptr;
+    job = new KIO::CommandLauncherJob(command);
+    job->start();
+}
+
+void ClientRegisterWidget::launchTest(){
+
+    if (!checkingConnection){
+        setTestInProgress(true);
+        QFuture<void> future=QtConcurrent::run(this,&ClientRegisterWidget::testConnection);
+    }
+}
+
+void ClientRegisterWidget::testConnection()
+{
+
+    if (!checkingConnection){
+        checkingConnection=true;
+        bool ret=m_utils->isThereConnectionWithADI();
+
+        if (connectedWithServer != ret ){
+            connectedWithServer=ret;
+            updateWidget=true;
+        }else{
+            if (firstRun){
+                updateWidget=true;
+            }
+        }
+
+        if (updateWidget){
+            firstRun=false;
+            updateWidgetFeedbak();
+         }
+
+         checkingConnection=false;
+         updateWidget=false;
+         setTestInProgress(false);
+    }
+}
+
+void ClientRegisterWidget::updateWidgetFeedbak()
+{
+    QString cart=QString::number(initCart);
+    notificationBody=i18n("Laptop assigned to cart number: ")+cart;
+
+    if (connectedWithServer){
+        tmpIcon="client_register_cart_";
+        tmpIcon.append(QString("%1").arg(cart));
+        notificationServerBody=i18n("Connected with ADI");
+        setSubToolTip(notificationBody+"\n"+notificationServerBody);
+        setIconNamePh("client_register_ok"); 
+  
+    }else{
+        tmpIcon="client_register_warning_cart_";
+        tmpIcon.append(QString("%1").arg(cart));
+        notificationServerBody=i18n("No connection to the ADI");
+        setIconNamePh("client_register_warning");
+    }
+    setIconName(tmpIcon);
+    setSubToolTip(notificationBody+"\n"+notificationServerBody); 
+    
+    if (showNotification){
+        m_notification=KNotification::event(QStringLiteral("Update"),notificationBody,notificationServerBody,tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
+    }
+}
+
 void ClientRegisterWidget::showError(){
 
     notificationBody=i18n("Unable to get cart assigned to laptop");
     tmpIcon="client_register_error";
     setCanEdit(true);
+    setCanTest(false);
     setIconName(tmpIcon);
     setIconNamePh(tmpIcon);
     setSubToolTip(notificationBody);
@@ -182,76 +263,6 @@ void ClientRegisterWidget::changeTryIconState(int state){
         setStatus(PassiveStatus);
     }
 
-}
-
-void ClientRegisterWidget::launchGui()
-{
-    KIO::CommandLauncherJob *job = nullptr;
-    QString cmd="lliurex-client-register";
-    job = new KIO::CommandLauncherJob(cmd);
-    job->start();
-}
-
-void ClientRegisterWidget::openHelp()
-{
-
-    QString command="xdg-open https://wiki.edu.gva.es/lliurex";
-    KIO::CommandLauncherJob *job = nullptr;
-    job = new KIO::CommandLauncherJob(command);
-    job->start();
-}
-
-void ClientRegisterWidget::testConnection()
-{
-    bool updateWidget=false;
-
-    if (!checkingConnection){
-        checkingConnection=true;
-        bool ret=m_utils->isThereConnectionWithADI();
-
-        if (connectedWithServer != ret ){
-            connectedWithServer=ret;
-            updateWidget=true;
-            updateConnectionFeedbak();
-        }else{
-            if (firstRun){
-                updateWidget=true;
-            }
-        }
-
-        if (updateWidget){
-            firstRun=false;
-            updateConnectionFeedbak();
-         }
-
-         checkingConnection=false;
-    }
-}
-
-void ClientRegisterWidget::updateConnectionFeedbak()
-{
-    QString cart=QString::number(initCart);
-    notificationBody=i18n("Laptop assigned to cart number: ")+cart;
-
-    if (connectedWithServer){
-        tmpIcon="client_register_cart_";
-        tmpIcon.append(QString("%1").arg(cart));
-        notificationServerBody=i18n("Connected with ADI");
-        setSubToolTip(notificationBody+"\n"+notificationServerBody);
-        setIconNamePh("client_register_ok"); 
-  
-    }else{
-        tmpIcon="client_register_warning_cart_";
-        tmpIcon.append(QString("%1").arg(cart));
-        notificationServerBody=i18n("No connection to the ADI");
-        setIconNamePh("client_register_warning");
-    }
-    setIconName(tmpIcon);
-    setSubToolTip(notificationBody+"\n"+notificationServerBody); 
-    
-    if (showNotification){
-        m_notification=KNotification::event(QStringLiteral("Set"),notificationBody,notificationServerBody,tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
-    }
 }
 
 void ClientRegisterWidget::setStatus(ClientRegisterWidget::TrayStatus status)
@@ -341,17 +352,30 @@ void ClientRegisterWidget::setCanEdit(bool canEdit){
 
 }
 
-bool ClientRegisterWidget::showWaitMsg(){
+bool ClientRegisterWidget::canTest(){
 
-    return m_showWaitMsg;
+    return m_canTest;
 }
 
-void ClientRegisterWidget::setShowWaitMsg(bool showWaitMsg){
+void ClientRegisterWidget::setCanTest(bool canTest){
 
-    if (m_showWaitMsg!=showWaitMsg){
-        m_showWaitMsg=showWaitMsg;
-        emit showWaitMsgChanged();
+    if (m_canTest!=canTest){
+        m_canTest=canTest;
+        emit canTestChanged();
     }
+
 }
 
+bool ClientRegisterWidget::testInProgress(){
 
+    return m_testInProgress;
+}
+
+void ClientRegisterWidget::setTestInProgress(bool testInProgress){
+
+    if (m_testInProgress!=testInProgress){
+        m_testInProgress=testInProgress;
+        emit testInProgressChanged();
+    }
+
+}
