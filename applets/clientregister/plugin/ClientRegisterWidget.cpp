@@ -212,7 +212,7 @@ void ClientRegisterWidget::testConnection()
 void ClientRegisterWidget::updateWidgetFeedbak()
 {
     QString cart=QString::number(initCart);
-    notificationBody=i18n("Laptop assigned to cart number: ")+cart;
+    notificationBody=i18n("Laptop assigned to cart: ")+cart;
 
     if (connectedWithServer){
         tmpIcon="client_register_cart_";
