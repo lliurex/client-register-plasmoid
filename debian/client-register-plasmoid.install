@@ -1,0 +1,5 @@
+usr/lib/*/qt5/qml/org/kde/plasma/private/clientregister/
+usr/share/kservices5/plasma-applet-org.kde.plasma.clientregister.desktop
+usr/share/metainfo/org.kde.plasma.clientregister.appdata.xml
+usr/share/plasma/plasmoids/org.kde.plasma.clientregister/
+usr/share/locale/*/*/*.mo
