@@ -107,23 +107,26 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
     bool isError=false;
     QVariantList result;
 
-    TARGET_FILE.setFileName(natfreeTie);
+    TARGET_FILE.setFileName(natfreeAdi);
 
-    if (TARGET_FILE.exists()){
-        TARGET_FILE.setFileName(clientRegisterVar);
+    if (!TARGET_FILE.exists()){
+        TARGET_FILE.setFileName(natfreeTie);
         if (TARGET_FILE.exists()){
-            QVariantList ret=getCurrentCart();
-            if (!ret[0].toBool()){
-                if (ret[1].toInt()==0){
-                    isAvailable=false;
-                }else{
-                    if (ret[1].toInt()>0){
-                        isAvailable=true;
+            TARGET_FILE.setFileName(clientRegisterVar);
+            if (TARGET_FILE.exists()){
+                QVariantList ret=getCurrentCart();
+                if (!ret[0].toBool()){
+                    if (ret[1].toInt()==0){
+                        isAvailable=false;
+                    }else{
+                        if (ret[1].toInt()>0){
+                            isAvailable=true;
+                        }
                     }
+                }else{
+                    isAvailable=true;
+                    isError=true;
                 }
-            }else{
-                isAvailable=true;
-                isError=true;
             }
         }
     }
@@ -140,7 +143,7 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
     bool isError=false;
     int numCart=0;
     QVariantList result;
-    variant::Variant cartInfo;
+    Variant cartInfo;
 
     try{
         cartInfo = client.call("ClientRegisterManager","get_current_cart");
@@ -170,7 +173,7 @@ bool ClientRegisterWidgetUtils::isThereConnectionWithADI()
     bool isConnected=false;
 
     try{
-        variant::Variant ret=client.call("ClientRegisterManager","test_connection_adi");
+        Variant ret=client.call("ClientRegisterManager","test_connection_adi");
         isConnected=ret;
         qDebug()<<"[CLIENT_REGISTER]: Testing connection with ADI. Result: "<<isConnected;
         return isConnected;

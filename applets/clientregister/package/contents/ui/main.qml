@@ -1,15 +1,16 @@
-import QtQuick 2.15
-import QtQuick.Layouts 1.15
-import QtQuick.Controls 2.15
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
 
-import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.core 2.1 as PlasmaCore
-import org.kde.plasma.components 3.0 as PC3
-import org.kde.plasma.extras 2.0 as PlasmaExtras
+import org.kde.plasma.plasmoid
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.components as PC3
+import org.kde.plasma.extras as PlasmaExtras
+import org.kde.kirigami as Kirigami
 
 import org.kde.plasma.private.clientregister 1.0
 // Item - the most basic plasmoid component, an empty container.
-Item {
+PlasmoidItem {
 
     id:clientRegisterApplet
     
@@ -32,31 +33,29 @@ Item {
         
     }
 
-    Plasmoid.switchWidth: units.gridUnit * 5
-    Plasmoid.switchHeight: units.gridUnit * 5
+    switchWidth: Kirigami.Units.gridUnit * 5
+    switchHeight: Kirigami.Units.gridUnit * 5
 
     Plasmoid.icon:clientRegisterWidget.iconName
-    Plasmoid.toolTipMainText: clientRegisterWidget.toolTip
-    Plasmoid.toolTipSubText: clientRegisterWidget.subToolTip
+    toolTipMainText: clientRegisterWidget.toolTip
+    toolTipSubText: clientRegisterWidget.subToolTip
 
     Component.onCompleted: {
-       plasmoid.removeAction("configure");
-       plasmoid.setAction("launchGui",i18n("Change cart"),"lliurex-client-register")
-       plasmoid.setAction("openHelp",i18n("See help"),"help-contents")
+       Plasmoid.setInternalAction("configure", configureAction)
+
     }
 
    
-    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
-    Plasmoid.fullRepresentation: PC3.Page {
-        implicitWidth: PlasmaCore.Units.gridUnit * 12
-        implicitHeight: PlasmaCore.Units.gridUnit * 6
+    fullRepresentation: PC3.Page {
+        implicitWidth: Kirigami.Units.gridUnit * 12
+        implicitHeight: Kirigami.Units.gridUnit * 6
         
         PlasmaExtras.PlaceholderMessage {
             id:phMsg
             anchors.centerIn: parent
-            width: parent.width - (PlasmaCore.Units.gridUnit * 4)
+            width: parent.width - (Kirigami.Units.gridUnit * 4)
             iconName: clientRegisterWidget.iconNamePh
-            text:Plasmoid.toolTipSubText
+            text:clientRegisterWidget.subToolTip
         }
         RowLayout{
             id:btnLayout
@@ -103,5 +102,22 @@ Item {
         clientRegisterWidget.openHelp()
 
     }
+
+    Plasmoid.contextualActions: [
+        PlasmaCore.Action{
+            text: i18n("See help")
+            icon.name:"help-contents.svg"
+            onTriggered:action_openHelp()
+        }
+
+    ]
+
+    PlasmaCore.Action {
+        id: configureAction
+        text: i18n("Change cart")
+        icon.name:"lliurex-client-register.svg"
+        onTriggered:action_launchGui()
+    }
+
 
  }  

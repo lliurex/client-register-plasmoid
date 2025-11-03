@@ -7,27 +7,27 @@ plasma_install_package(package org.kde.plasma.clientregister)
 #######################################################################################
 # Notes Library
 add_definitions(-DTRANSLATION_DOMAIN="plasma_applet_org.kde.plasma.clientregister")
+ecm_add_qml_module(clientregisterplugin URI org.kde.plasma.private.clientregister)
 
-set(clientregisterwidget_SRCS
+target_sources(clientregisterplugin PRIVATE
     plugin/plugin.cpp
     plugin/ClientRegisterWidget.cpp
     plugin/ClientRegisterWidgetUtils.cpp
    
 )
 
-add_library(clientregisterplugin SHARED ${clientregisterwidget_SRCS})
-
-target_link_libraries(clientregisterplugin
-                      Qt5::Quick
-                      Qt5::Core
-                      Qt5::Widgets
-                      KF5::CoreAddons
-                      KF5::I18n
-                      KF5::Notifications
-                      KF5::KIOWidgets
+target_link_libraries(clientregisterplugin PRIVATE
+                      Qt6::Quick
+                      Qt6::Core
+                      Qt6::Widgets
+                      KF6::CoreAddons
+                      KF6::I18n
+                      KF6::Notifications
+                      KF6::KIOWidgets
                       Edupals::Base Edupals::N4D
 
                       )
+ecm_finalize_qml_module(clientregisterplugin)
 
 install(FILES plugin/qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/plasma/private/clientregister)
 install(TARGETS clientregisterplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/plasma/private/clientregister)
@@ -99,5 +99,5 @@ install(FILES "icons/client_register_warning_cart_14.svg"
         DESTINATION ${DATAROOTDIR}/usr/share/icons/hicolor/scalable/apps/)
 install(FILES "icons/client_register_warning_cart_15.svg"
         DESTINATION ${DATAROOTDIR}/usr/share/icons/hicolor/scalable/apps/)
-install(FILES "knotifications5/clientregister.notifyrc"
-       DESTINATION ${DATAROOTDIR}/usr/share/knotifications5/)
+install(FILES "knotifications6/clientregister.notifyrc"
+        DESTINATION ${DATAROOTDIR}/usr/share/knotifications6/)

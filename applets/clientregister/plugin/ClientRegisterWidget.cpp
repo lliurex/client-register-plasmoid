@@ -4,7 +4,6 @@
 #include <KLocalizedString>
 #include <KFormat>
 #include <KNotification>
-#include <KRun>
 #include <QTimer>
 #include <QStandardPaths>
 #include <QDebug>
@@ -178,7 +177,9 @@ void ClientRegisterWidget::launchTest(){
 
     if (!checkingConnection){
         setTestInProgress(true);
-        QFuture<void> future=QtConcurrent::run(this,&ClientRegisterWidget::testConnection);
+        QFuture<void> future=QtConcurrent::run([this](){
+            this->ClientRegisterWidget::testConnection();
+        });
     }
 }
 
@@ -231,7 +232,13 @@ void ClientRegisterWidget::updateWidgetFeedbak()
     setSubToolTip(notificationBody+"\n"+notificationServerBody); 
     
     if (showNotification){
-        m_notification=KNotification::event(QStringLiteral("Update"),notificationBody,notificationServerBody,tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
+        m_notification = new KNotification(QStringLiteral("Update"),KNotification::CloseOnTimeout,this);
+        m_notification->setComponentName(QStringLiteral("clientregister"));
+        m_notification->setTitle(notificationBody);
+        m_notification->setText(notificationServerBody);
+        m_notification->setIconName(tmpIcon);
+        m_notification->sendEvent();
+ 
     }
 }
 
@@ -245,8 +252,11 @@ void ClientRegisterWidget::showError(){
     setIconNamePh(tmpIcon);
     setSubToolTip(notificationBody);
     changeTryIconState(0);
-    m_notification=KNotification::event(QStringLiteral("Error"),notificationBody,"",tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
-
+    m_notification = new KNotification(QStringLiteral("Error"),KNotification::CloseOnTimeout,this);
+    m_notification->setComponentName(QStringLiteral("clientregister"));
+    m_notification->setTitle(notificationBody);
+    m_notification->setIconName(tmpIcon);
+    m_notification->sendEvent();
 }
 
 ClientRegisterWidget::TrayStatus ClientRegisterWidget::status() const
