@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
 "POT-Creation-Date: 2025-10-31 13:35+0100\n"
-"PO-Revision-Date: 2025-10-31 13:36+0100\n"
+"PO-Revision-Date: 2025-11-03 13:06+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: ../applets/clientregister/package/contents/ui/main.qml:44
 #: ../applets/clientregister/package/contents/ui/main.qml:90
@@ -61,7 +61,7 @@ msgstr "Portàtil assignat al carret: "
 #: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:220
 #, kde-format
 msgid "Connected with ADI"
-msgstr "Sense connexió a l'ADI"
+msgstr "Connectat amb l'ADI"
 
 #: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:227
 #, kde-format
