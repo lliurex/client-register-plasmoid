@@ -33,6 +33,7 @@ public:
    QString user;
    QString clientRegisterVar="/var/lib/n4d/variables/CONTROLLED_CLASSROOM";
    QString natfreeTie="/usr/bin/natfree-tie";
+   QString natfreeAdi="/usr/bin/natfree-adi";
 
 private:    
      
