@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2025-10-31 13:05+0100\n"
-"PO-Revision-Date: 2025-10-31 13:07+0100\n"
+"POT-Creation-Date: 2025-10-31 13:35+0100\n"
+"PO-Revision-Date: 2025-10-31 13:37+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -19,21 +19,26 @@ msgstr ""
 
 #: ../applets/clientregister/package/contents/ui/main.qml:44
 #: ../applets/clientregister/package/contents/ui/main.qml:90
+#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:44
+#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:90
 #, kde-format
 msgid "Change cart"
 msgstr "Cambiar carrito"
 
 #: ../applets/clientregister/package/contents/ui/main.qml:45
+#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:45
 #, kde-format
 msgid "See help"
 msgstr "Ver ayuda"
 
 #: ../applets/clientregister/package/contents/ui/main.qml:80
+#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:80
 #, kde-format
 msgid "Running test..."
 msgstr "Ejecutando test..."
 
 #: ../applets/clientregister/package/contents/ui/main.qml:80
+#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:80
 #, kde-format
 msgid "Test connection with ADI"
 msgstr "Test de conexión con la ADI"
@@ -50,8 +55,8 @@ msgstr "Client Register no disponible en este equipo"
 
 #: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:215
 #, kde-format
-msgid "Laptop assigned to cart number: "
-msgstr "Portátil asignado al carrito número: "
+msgid "Laptop assigned to cart: "
+msgstr "Portátil asignado al carrito: "
 
 #: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:220
 #, kde-format

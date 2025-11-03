@@ -107,23 +107,26 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
     bool isError=false;
     QVariantList result;
 
-    TARGET_FILE.setFileName(natfreeTie);
+    TARGET_FILE.setFileName(natfreeAdi);
 
-    if (TARGET_FILE.exists()){
-        TARGET_FILE.setFileName(clientRegisterVar);
-        if (TARGET_FILE.exists()){
-            QVariantList ret=getCurrentCart();
-            if (!ret[0].toBool()){
-                if (ret[1].toInt()==0){
-                    isAvailable=false;
-                }else{
-                    if (ret[1].toInt()>0){
-                        isAvailable=true;
+    if (!TARGET_FILE.exists()){
+        TARGET_FILE.setFileName(natfreeTie);
+        if (!TARGET_FILE.exists()){
+            TARGET_FILE.setFileName(clientRegisterVar);
+            if (TARGET_FILE.exists()){
+                QVariantList ret=getCurrentCart();
+                if (!ret[0].toBool()){
+                    if (ret[1].toInt()==0){
+                        isAvailable=false;
+                    }else{
+                        if (ret[1].toInt()>0){
+                            isAvailable=true;
+                        }
                     }
+                }else{
+                    isAvailable=true;
+                    isError=true;
                 }
-            }else{
-                isAvailable=true;
-                isError=true;
             }
         }
     }
