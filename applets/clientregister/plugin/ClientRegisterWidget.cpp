@@ -92,16 +92,17 @@ void ClientRegisterWidget::updateInfo(){
         bool canCreateWatcher=false;
         bool error=false;
         showNotification=true;
+        int tmpCart=0;
        
         if (TARGET_FILE.exists()){
             qDebug()<<"[CLIENT_REGISTER]: Updating info...";
             QVariantList ret=m_utils->getCurrentCart();
-            initCart=ret[1].toInt();
+            tmpCart=ret[1].toInt();
             if (!ret[0].toBool()){
-                if (initCart<=0){
+                if (tmpCart<=0){
                     disable=true;
                 }else{
-                    if (initCart>14){
+                    if (tmpCart>14){
                         disable=true;
                     }
                     canCreateWatcher=true;
@@ -124,6 +125,11 @@ void ClientRegisterWidget::updateInfo(){
                 isWorking=false;
                 firstRun=true;
             }else{
+                if (initCart!=tmpCart){
+                    initCart=tmpCart;
+                }else{
+                    showNotification=false;
+                }
                 testConnection();
                 if (!updateWidget){
                     updateWidgetFeedbak();
@@ -195,6 +201,7 @@ void ClientRegisterWidget::testConnection()
             updateWidget=true;
         }else{
             if (firstRun){
+                showNotification=true;
                 updateWidget=true;
             }
         }
