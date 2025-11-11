@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2025-10-31 13:35+0100\n"
-"PO-Revision-Date: 2025-10-31 13:37+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-11 17:01+0100\n"
+"PO-Revision-Date: 2025-11-11 17:03+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -15,60 +15,60 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
-#: ../applets/clientregister/package/contents/ui/main.qml:44
-#: ../applets/clientregister/package/contents/ui/main.qml:90
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:44
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:90
-#, kde-format
-msgid "Change cart"
-msgstr "Cambiar carrito"
-
-#: ../applets/clientregister/package/contents/ui/main.qml:45
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:45
-#, kde-format
-msgid "See help"
-msgstr "Ver ayuda"
-
-#: ../applets/clientregister/package/contents/ui/main.qml:80
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:80
+#: ../applets/clientregister/package/contents/ui/main.qml:79
 #, kde-format
 msgid "Running test..."
 msgstr "Ejecutando test..."
 
-#: ../applets/clientregister/package/contents/ui/main.qml:80
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:80
+#: ../applets/clientregister/package/contents/ui/main.qml:79
 #, kde-format
 msgid "Test connection with ADI"
 msgstr "Test de conexión con la ADI"
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:37
+#: ../applets/clientregister/package/contents/ui/main.qml:89
+#: ../applets/clientregister/package/contents/ui/main.qml:117
+#, kde-format
+msgid "Change cart"
+msgstr "Cambiar carrito"
+
+#: ../applets/clientregister/package/contents/ui/main.qml:108
+#, kde-format
+msgid "See help"
+msgstr "Ver ayuda"
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:36
 #, kde-format
 msgid "Client Register"
 msgstr "Client Register"
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:149
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:158
 #, kde-format
 msgid "Client Register not available in this computer"
 msgstr "Client Register no disponible en este equipo"
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:215
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:228
 #, kde-format
 msgid "Laptop assigned to cart: "
 msgstr "Portátil asignado al carrito: "
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:220
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:230
+#, kde-format
+msgid "Laptop NO assigned to cart"
+msgstr "Portátil SIN asignar a ningún carrito"
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:241
 #, kde-format
 msgid "Connected with ADI"
 msgstr "Conectado a la ADI"
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:227
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:251
 #, kde-format
 msgid "No connection to the ADI"
 msgstr "Si conexión a la ADI"
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:240
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:270
 #, kde-format
 msgid "Unable to get cart assigned to laptop"
 msgstr "No es posible obtener el carrito asignado al portátil"

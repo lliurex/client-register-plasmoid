@@ -99,11 +99,15 @@ void ClientRegisterWidget::updateInfo(){
             QVariantList ret=m_utils->getCurrentCart();
             tmpCart=ret[1].toInt();
             if (!ret[0].toBool()){
-                if (tmpCart<=0){
+                if (tmpCart==0){
                     disable=true;
                 }else{
                     if (tmpCart>14){
                         disable=true;
+                    }else{
+                        if (tmpCart<-1){
+                            disable=true;
+                        }
                     }
                     canCreateWatcher=true;
                 }
@@ -220,20 +224,32 @@ void ClientRegisterWidget::testConnection()
 void ClientRegisterWidget::updateWidgetFeedbak()
 {
     QString cart=QString::number(initCart);
-    notificationBody=i18n("Laptop assigned to cart: ")+cart;
+    if (initCart>-1){
+        notificationBody=i18n("Laptop assigned to cart: ")+cart;
+    }else{
+        notificationBody=i18n("Laptop NO assigned to cart");
+        tmpIcon="client_register_error";
+        setIconNamePh("client_register_error");
+    }
 
     if (connectedWithServer){
-        tmpIcon="client_register_cart_";
-        tmpIcon.append(QString("%1").arg(cart));
+        if (initCart>0){
+            tmpIcon="client_register_cart_";
+            tmpIcon.append(QString("%1").arg(cart));
+            setIconNamePh("client_register_ok"); 
+        }
         notificationServerBody=i18n("Connected with ADI");
         setSubToolTip(notificationBody+"\n"+notificationServerBody);
-        setIconNamePh("client_register_ok"); 
+       
   
     }else{
-        tmpIcon="client_register_warning_cart_";
-        tmpIcon.append(QString("%1").arg(cart));
+        if (initCart>0){
+            tmpIcon="client_register_warning_cart_";
+            tmpIcon.append(QString("%1").arg(cart));
+            setIconNamePh("client_register_warning");
+        }
         notificationServerBody=i18n("No connection to the ADI");
-        setIconNamePh("client_register_warning");
+        
     }
     setIconName(tmpIcon);
     setSubToolTip(notificationBody+"\n"+notificationServerBody); 
