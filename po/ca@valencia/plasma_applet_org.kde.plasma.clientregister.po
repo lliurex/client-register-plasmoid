@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2025-10-31 13:35+0100\n"
-"PO-Revision-Date: 2025-11-03 13:06+0100\n"
+"POT-Creation-Date: 2025-11-11 17:08+0100\n"
+"PO-Revision-Date: 2025-11-11 17:09+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -19,26 +19,21 @@ msgstr ""
 
 #: ../applets/clientregister/package/contents/ui/main.qml:44
 #: ../applets/clientregister/package/contents/ui/main.qml:90
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:44
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:90
 #, kde-format
 msgid "Change cart"
 msgstr "Canvia el carret"
 
 #: ../applets/clientregister/package/contents/ui/main.qml:45
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:45
 #, kde-format
 msgid "See help"
 msgstr "Vore l'ajuda"
 
 #: ../applets/clientregister/package/contents/ui/main.qml:80
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:80
 #, kde-format
 msgid "Running test..."
 msgstr "Executant test..."
 
 #: ../applets/clientregister/package/contents/ui/main.qml:80
-#: ../debian/tmp/usr/share/plasma/plasmoids/org.kde.plasma.clientregister/contents/ui/main.qml:80
 #, kde-format
 msgid "Test connection with ADI"
 msgstr "Comprova connexió amb l'ADI"
@@ -48,27 +43,32 @@ msgstr "Comprova connexió amb l'ADI"
 msgid "Client Register"
 msgstr "Client Register"
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:149
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:159
 #, kde-format
 msgid "Client Register not available in this computer"
 msgstr "Client Register no està disponible en este equip"
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:215
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:227
 #, kde-format
 msgid "Laptop assigned to cart: "
 msgstr "Portàtil assignat al carret: "
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:220
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:229
+#, kde-format
+msgid "Laptop NO assigned to cart"
+msgstr "Portàtil SNSE assignat a cap carret"
+
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:240
 #, kde-format
 msgid "Connected with ADI"
 msgstr "Connectat amb l'ADI"
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:227
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:250
 #, kde-format
 msgid "No connection to the ADI"
 msgstr "Sense connexió a l'ADI"
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:240
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:263
 #, kde-format
 msgid "Unable to get cart assigned to laptop"
 msgstr "No és possible obtindre el carret assignat al portàtil"
