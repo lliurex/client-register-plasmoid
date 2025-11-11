@@ -111,7 +111,7 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
 
     if (!TARGET_FILE.exists()){
         TARGET_FILE.setFileName(natfreeTie);
-        if (!TARGET_FILE.exists()){
+        if (TARGET_FILE.exists()){
             TARGET_FILE.setFileName(clientRegisterVar);
             if (TARGET_FILE.exists()){
                 QVariantList ret=getCurrentCart();
@@ -121,6 +121,10 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
                     }else{
                         if (ret[1].toInt()>0){
                             isAvailable=true;
+                        }else{
+                            if (ret[1].toInt()==-1){
+                                isAvailable=true;
+                            }
                         }
                     }
                 }else{
@@ -153,7 +157,7 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
             numCart=cartInfo["return"];
             qDebug()<<"[CLIENT_REGISTER]: Reading CONTROLLED_CLASSROOM var: "<<QString::number(numCart);
         }else{
-            numCart=0;
+            numCart=-1;
             qDebug()<<"[CLIENT_REGISTER]: Reading CONTROLLED_CLASSROOM var: ''";
 
         }
