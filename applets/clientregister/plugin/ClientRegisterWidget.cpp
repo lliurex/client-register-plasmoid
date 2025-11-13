@@ -177,7 +177,7 @@ void ClientRegisterWidget::launchGui()
 void ClientRegisterWidget::openHelp()
 {
 
-    QString command="xdg-open https://wiki.edu.gva.es/lliurex";
+    QString command="xdg-open https://wiki.edu.gva.es/lliurex/tiki-index.php?page=Configuración-de-los-equipos-del-aula-móvil";
     KIO::CommandLauncherJob *job = nullptr;
     job = new KIO::CommandLauncherJob(command);
     job->start();
