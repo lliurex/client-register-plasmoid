@@ -29,6 +29,7 @@ public:
    bool showWidget();
    QVariantList isClientRegisterAvailable();
    bool isThereConnectionWithADI();
+   bool isWifiAlu();
 
    QString user;
    QString clientRegisterVar="/var/lib/n4d/variables/CONTROLLED_CLASSROOM";
