@@ -94,7 +94,7 @@ void ClientRegisterWidget::updateInfo(){
         showNotification=true;
         int tmpCart=0;
        
-        if (TARGET_FILE.exists()){
+        if (m_utils->isWifiAlu() && TARGET_FILE.exists()){
             qDebug()<<"[CLIENT_REGISTER]: Updating info...";
             QVariantList ret=m_utils->getCurrentCart();
             tmpCart=ret[1].toInt();
@@ -168,10 +168,15 @@ void ClientRegisterWidget::disableApplet(){
 
 void ClientRegisterWidget::launchGui()
 {
-    KIO::CommandLauncherJob *job = nullptr;
-    QString cmd="lliurex-client-register";
-    job = new KIO::CommandLauncherJob(cmd);
-    job->start();
+    if (m_utils->isWifiAlu()){
+        KIO::CommandLauncherJob *job = nullptr;
+        QString cmd="lliurex-client-register";
+        job = new KIO::CommandLauncherJob(cmd);
+        job->start();
+    }else{
+        m_timer->stop();
+        disableApplet();
+    }
 }
 
 void ClientRegisterWidget::openHelp()
@@ -185,11 +190,16 @@ void ClientRegisterWidget::openHelp()
 
 void ClientRegisterWidget::launchTest(){
 
-    if (!checkingConnection){
-        setTestInProgress(true);
-        QFuture<void> future=QtConcurrent::run([this](){
-            this->ClientRegisterWidget::testConnection();
-        });
+    if (m_utils->isWifiAlu()){
+        if (!checkingConnection){
+            setTestInProgress(true);
+            QFuture<void> future=QtConcurrent::run([this](){
+                this->ClientRegisterWidget::testConnection();
+            });
+        }
+    }else{
+        m_timer->stop();
+        disableApplet();
     }
 }
 
