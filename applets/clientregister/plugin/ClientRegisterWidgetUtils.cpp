@@ -110,26 +110,28 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
     TARGET_FILE.setFileName(natfreeAdi);
 
     if (!TARGET_FILE.exists()){
-        TARGET_FILE.setFileName(natfreeTie);
-        if (TARGET_FILE.exists()){
-            TARGET_FILE.setFileName(clientRegisterVar);
+        if (isWifiAlu()){
+            TARGET_FILE.setFileName(natfreeTie);
             if (TARGET_FILE.exists()){
-                QVariantList ret=getCurrentCart();
-                if (!ret[0].toBool()){
-                    if (ret[1].toInt()==0){
-                        isAvailable=false;
-                    }else{
-                        if (ret[1].toInt()>0){
-                            isAvailable=true;
+                TARGET_FILE.setFileName(clientRegisterVar);
+                if (TARGET_FILE.exists()){
+                    QVariantList ret=getCurrentCart();
+                    if (!ret[0].toBool()){
+                        if (ret[1].toInt()==0){
+                            isAvailable=false;
                         }else{
-                            if (ret[1].toInt()==-1){
+                            if (ret[1].toInt()>0){
                                 isAvailable=true;
+                            }else{
+                                if (ret[1].toInt()==-1){
+                                    isAvailable=true;
+                                }
                             }
                         }
+                    }else{
+                        isAvailable=true;
+                        isError=true;
                     }
-                }else{
-                    isAvailable=true;
-                    isError=true;
                 }
             }
         }
@@ -185,5 +187,29 @@ bool ClientRegisterWidgetUtils::isThereConnectionWithADI()
         qDebug()<<"[CLIENT_REGISTER]: Testing connection with ADI. Error: "<<e.what();
         return isConnected;
     }
+
+}
+
+bool ClientRegisterWidgetUtils::isWifiAlu(){
+
+    bool matchWifi=false;
+    QProcess process;
+    QStringList flavours;
+    QString cmd="lliurex-version -v";
+    process.start("/bin/sh",QStringList()<<"-c"<<cmd);
+    process.waitForFinished(-1);
+    QString stdout=process.readAllStandardOutput();
+    QString stderr=process.readAllStandardError();
+    flavours=stdout.split('\n');
+
+
+    for (int i=0;i<flavours.count();i++){
+        if (flavours[i].contains("wifi")){
+            matchWifi=true;
+            break;
+        }
+    }
+
+    return matchWifi;
 
 }
