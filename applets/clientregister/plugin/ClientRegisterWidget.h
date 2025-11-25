@@ -44,7 +44,8 @@ public:
      */
     enum TrayStatus {
         ActiveStatus=0,
-        PassiveStatus
+        PassiveStatus,
+        HiddenStatus
     };
 
     ClientRegisterWidget(QObject *parent = nullptr);

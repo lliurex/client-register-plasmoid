@@ -47,11 +47,11 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
 void ClientRegisterWidget::plasmoidMode(){
 
     if (m_utils->showWidget()){
-        if (TARGET_FILE.exists()){
-            createWatcher();
-        }
         QVariantList ret=m_utils->isClientRegisterAvailable();
         if (ret[0].toBool()){
+            if (TARGET_FILE.exists()){
+                createWatcher();
+            }
             if (!ret[1].toBool()){
                 m_timer->start(300000);
                 updateInfo();
@@ -63,8 +63,7 @@ void ClientRegisterWidget::plasmoidMode(){
         }
         
     }else{
-        setCanEdit(false);
-        changeTryIconState(1);
+        disableApplet();
     }
 
 }
@@ -125,10 +124,10 @@ void ClientRegisterWidget::updateInfo(){
 
         if (!error){
             if (disable){
-                disableApplet();
                 m_timer->stop();
                 isWorking=false;
                 firstRun=true;
+                disableApplet();
             }else{
                 if (initCart!=tmpCart){
                     initCart=tmpCart;
@@ -163,7 +162,7 @@ void ClientRegisterWidget::disableApplet(){
     setIconName("client_register");
     setIconNamePh("client_register");
     setSubToolTip(notificationBody);
-    changeTryIconState(1);
+    changeTryIconState(2);
 
 }
 
@@ -292,8 +291,10 @@ void ClientRegisterWidget::changeTryIconState(int state){
     if (state==0){
     	setStatus(ActiveStatus);
         setToolTip(notificationTitle);
-    }else{
+    }else if (state==1){
         setStatus(PassiveStatus);
+    }else if (state==2){
+        setStatus(HiddenStatus);
     }
 
 }
