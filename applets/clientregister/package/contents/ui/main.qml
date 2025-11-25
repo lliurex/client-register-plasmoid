@@ -27,7 +27,9 @@ PlasmoidItem {
                 return PlasmaCore.Types.ActiveStatus
             case ClientRegisterWidget.PassiveStatus:
                 return PlasmaCore.Types.PassiveStatus
-           
+            case ClientRegisterWidget.HiddenStatus:
+                return PlasmaCore.Types.HiddenStatus
+         
         }
         return  PlasmaCore.Types.ActiveStatus
         
