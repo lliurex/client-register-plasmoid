@@ -5,7 +5,7 @@
    viewBox="0 0 24 24"
    version="1.1"
    id="svg2"
-   sodipodi:docname="client-register_cart_5.svg"
+   sodipodi:docname="client_register_cart_5.svg"
    inkscape:version="1.3 (1:1.3+202307231459+0e150ed6c4)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -28,7 +28,7 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg2" />
+     inkscape:current-layer="g1" />
   <defs
      id="defs1">
     <style
@@ -223,7 +223,7 @@
        transform="matrix(0,-0.1416613,0.14166133,0,43.048586,-2.4234434)" />
     <g
        id="g5"
-       transform="matrix(1.4471978,0,0,1.4471978,-36.563058,0.33026983)">
+       transform="matrix(1.301865,0,0,1.301865,-31.686181,1.3642234)">
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16px;line-height:0;font-family:Ro;-inkscape-font-specification:'Ro Bold';text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.0330233"
