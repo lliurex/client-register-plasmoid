@@ -223,8 +223,7 @@
        transform="matrix(0,-0.1416613,0.14166133,0,43.048586,-2.4234434)" />
     <g
        id="g5"
-       transform="translate(-1.7168737,-13.78663)"
-       style="fill:#000000">
+       transform="matrix(0.86858038,0,0,0.93062184,0.08579268,-12.092913)">
       <path
          style="-inkscape-font-specification:'Roboto Bold';fill:#ffffff;stroke-width:0.0483799"
          d="M 17.339374,16.069052 V 32.756594 H 14.031623 V 19.994856 l -3.937249,1.224669 v -2.678249 l 6.89019,-2.472224 z"
