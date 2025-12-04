@@ -201,7 +201,8 @@ void ClientRegisterWidget::launchTest(){
                     this->ClientRegisterWidget::testConnection(true);
                 });
                 manualCheckCount+=1;
-           }else{
+           }
+           if (manualCheckCount>=maxManualCheck){
                 setCanTest(false);
            }
         }
