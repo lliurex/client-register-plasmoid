@@ -37,7 +37,10 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
     notificationTitle=i18n("Client Register");
     TARGET_FILE.setFileName(m_utils->clientRegisterVar);
     firstRun=true;
-    connect(m_timer, &QTimer::timeout, this, &ClientRegisterWidget::testConnection);
+    bool isManualCheck=false;
+    connect(m_timer, &QTimer::timeout, this, [this, isManualCheck](){
+        this->ClientRegisterWidget::testConnection(isManualCheck);
+        });
 
     setSubToolTip(notificationTitle);
     plasmoidMode();
@@ -134,7 +137,7 @@ void ClientRegisterWidget::updateInfo(){
                 }else{
                     showNotification=false;
                 }
-                testConnection();
+                testConnection(false);
                 if (!updateWidget){
                     updateWidgetFeedbak();
                 }
@@ -192,8 +195,16 @@ void ClientRegisterWidget::launchTest(){
 
     if (m_utils->isWifiAlu()){
         if (!checkingConnection){
-            setTestInProgress(true);
-            QFuture<void> future=QtConcurrent::run(this,&ClientRegisterWidget::testConnection);
+           if (manualCheckCount<maxManualCheck){
+                setTestInProgress(true);
+                QFuture<void> future=QtConcurrent::run([this](){
+                    this->ClientRegisterWidget::testConnection(true);
+                });
+                manualCheckCount+=1;
+           }
+           if (manualCheckCount>=maxManualCheck){
+                setCanTest(false);
+           }
         }
     }else{
         m_timer->stop();
@@ -201,7 +212,7 @@ void ClientRegisterWidget::launchTest(){
     }
 }
 
-void ClientRegisterWidget::testConnection()
+void ClientRegisterWidget::testConnection(bool isManualCheck)
 {
 
     if (!checkingConnection){
@@ -221,11 +232,15 @@ void ClientRegisterWidget::testConnection()
         if (updateWidget){
             firstRun=false;
             updateWidgetFeedbak();
-         }
+        }
 
-         checkingConnection=false;
-         updateWidget=false;
-         setTestInProgress(false);
+        checkingConnection=false;
+        updateWidget=false;
+        if (!isManualCheck){
+            manualCheckCount=0;
+            setCanTest(true);
+        }
+        setTestInProgress(false);
     }
 }
 

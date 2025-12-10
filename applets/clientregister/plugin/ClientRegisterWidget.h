@@ -123,14 +123,16 @@ private:
     QFileSystemWatcher *watcher=nullptr;
     ClientRegisterWidgetUtils* m_utils;
     bool createFileWatcher=false;
-    bool showNotification=true; 
+    bool showNotification=true;
+    int maxManualCheck=3;
+    int manualCheckCount=0; 
     QPointer<KNotification> m_notification;
     void plasmoidMode();
     void createWatcher();
     void disableApplet();
     void showError();
     void updateWidgetFeedbak();
-    void testConnection();
+    void testConnection(bool isManualCheck=false);
 
 };
 
