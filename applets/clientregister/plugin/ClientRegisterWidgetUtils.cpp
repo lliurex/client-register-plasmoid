@@ -32,7 +32,6 @@ ClientRegisterWidgetUtils::ClientRegisterWidgetUtils(QObject *parent)
        
 {
     user=qgetenv("USER");
-    n4d::Client client;
     client=n4d::Client("https://127.0.0.1:9779");
   
 }
