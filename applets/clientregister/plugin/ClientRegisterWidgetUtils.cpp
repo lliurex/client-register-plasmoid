@@ -188,6 +188,7 @@ bool ClientRegisterWidgetUtils::isThereConnectionWithADI()
         return isConnected;
     }
     */
+    return isConnected;
 }
 
 bool ClientRegisterWidgetUtils::isWifiAlu(){
