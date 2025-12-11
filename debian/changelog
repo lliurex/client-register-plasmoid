@@ -1,3 +1,9 @@
+client-register-plasmoid (1.1) noble; urgency=medium
+
+  * Added test to check connection with ADI
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Thu, 11 Dec 2025 14:12:28 +0100
+
 client-register-plasmoid (1.0) noble; urgency=medium
 
   * Initial release.

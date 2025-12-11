@@ -35,6 +35,7 @@ Depends: plasma-framework,
          qml-module-qtwebengine,
          qml-module-qtwebkit,
          n4d-lliurex-client-register,
+         n4d-natfree-tie,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: additional widgets for Plasma 6
