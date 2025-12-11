@@ -177,6 +177,7 @@ bool ClientRegisterWidgetUtils::isThereConnectionWithADI()
 {
     bool isConnected=false;
 
+    /*
     try{
         Variant ret=client.call("ClientRegisterManager","test_connection_adi");
         isConnected=ret;
@@ -186,7 +187,7 @@ bool ClientRegisterWidgetUtils::isThereConnectionWithADI()
         qDebug()<<"[CLIENT_REGISTER]: Testing connection with ADI. Error: "<<e.what();
         return isConnected;
     }
-
+    */
 }
 
 bool ClientRegisterWidgetUtils::isWifiAlu(){
