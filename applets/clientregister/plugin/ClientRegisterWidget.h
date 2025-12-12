@@ -126,7 +126,7 @@ private:
     bool showNotification=true;
     int maxManualCheck=3;
     int manualCheckCount=0;
-    int defaultTimeOutToCheck=150000; 
+    int defaultTimeOutToCheck=120000; 
     QPointer<KNotification> m_notification;
     void plasmoidMode();
     void createWatcher();
