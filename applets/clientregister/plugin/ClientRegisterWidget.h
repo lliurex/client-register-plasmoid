@@ -125,7 +125,8 @@ private:
     bool createFileWatcher=false;
     bool showNotification=true;
     int maxManualCheck=3;
-    int manualCheckCount=0; 
+    int manualCheckCount=0;
+    int defaultTimeOutToCheck=150000; 
     QPointer<KNotification> m_notification;
     void plasmoidMode();
     void createWatcher();
