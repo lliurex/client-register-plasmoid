@@ -56,7 +56,7 @@ void ClientRegisterWidget::plasmoidMode(){
                 createWatcher();
             }
             if (!ret[1].toBool()){
-                m_timer->start(300000);
+                m_timer->start(defaultTimeOutToCheck);
                 updateInfo();
             }else{
                 showError();
