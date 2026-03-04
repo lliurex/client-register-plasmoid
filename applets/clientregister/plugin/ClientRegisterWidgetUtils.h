@@ -25,22 +25,31 @@ public:
    ClientRegisterWidgetUtils(QObject *parent = nullptr);
 
    void cleanCache();
-   QVariantList getCurrentCart();
-   bool showWidget();
-   QVariantList isClientRegisterAvailable();
-   bool isThereConnectionWithADI();
+   void getWidgetStatus();
+   void getCurrentInfo();
    bool isWifiAlu();
+   bool isThereConnectionWithADI();
 
-   QString user;
    QString clientRegisterVar="/var/lib/n4d/variables/CONTROLLED_CLASSROOM";
-   QString natfreeTie="/usr/bin/natfree-tie";
-   QString natfreeAdi="/usr/bin/natfree-adi";
+
+
+signals:
+
+    void getWidgetStatusFinished (bool isAvailable, bool isError);
+    void getCurrentInfoFinished (bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);
+
 
 private:    
      
+    QString user;
     n4d::Client client;
-    QFile TARGET_FILE;
+    QString natfreeTie="/usr/bin/natfree-tie";
+    QString natfreeAdi="/usr/bin/natfree-adi";
     QString getInstalledVersion();
+    bool showWidget();
+    QVariantList isClientRegisterAvailable();
+    QVariantList getCurrentCart();
+
      
 };
 

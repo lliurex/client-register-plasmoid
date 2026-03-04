@@ -80,7 +80,6 @@ public:
 
 public slots:
     
-    void updateInfo();
     void launchGui();
     void openHelp();
     void launchTest();
@@ -134,6 +133,12 @@ private:
     void showError();
     void updateWidgetFeedbak();
     void testConnection(bool isManualCheck=false);
+
+
+private slots:
+    void initPlasmoid(bool isAvailable, bool isError);
+    void getInfo();
+    void updateInfo(bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);
 
 };
 

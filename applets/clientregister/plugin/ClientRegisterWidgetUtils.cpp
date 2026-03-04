@@ -1,29 +1,15 @@
 #include "ClientRegisterWidgetUtils.h"
 
 #include <QFile>
-#include <QDateTime>
-#include <QFileInfo>
-#include <QRegularExpression>
-#include <QStandardPaths>
-#include <QDebug>
+#include <QDir>
 #include <QTextStream>
-#include <QJsonObject>
-#include <QList>
-#include <KLocalizedString>
-#include <sys/types.h>
+#include <QDebug>
+#include <QThreadPool>
 
-#include <grp.h>
-#include <pwd.h>
 #include <n4d.hpp>
 #include <variant.hpp>
-#include <json.hpp>
-
-#include <tuple>
-#include <sys/types.h>
-#include <QDebug>
 
 using namespace edupals;
-using namespace std;
 using namespace edupals::variant;
 
 
@@ -93,6 +79,24 @@ QString ClientRegisterWidgetUtils::getInstalledVersion(){
     }
     return installedVersion;
 
+}
+
+void ClientRegisterWidgetUtils::getWidgetStatus(){
+
+    QThreadPool::globalInstance()->start([this]() {
+        bool isAvailable=false;
+        bool isError=false;
+        QVariantList result;
+
+        if (showWidget()){
+            result=isClientRegisterAvailable();
+            isAvailable=result[0].toBool();
+            isError=result[1].toBool();
+        }
+
+        emit getWidgetStatusFinished(isAvailable, isError);
+    });
+
 }  
 
 bool ClientRegisterWidgetUtils::showWidget(){
@@ -106,14 +110,11 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
     bool isError=false;
     QVariantList result;
 
-    TARGET_FILE.setFileName(natfreeAdi);
 
-    if (!TARGET_FILE.exists()){
+    if (!QFile::exists(natfreeAdi)){
         if (isWifiAlu()){
-            TARGET_FILE.setFileName(natfreeTie);
-            if (TARGET_FILE.exists()){
-                TARGET_FILE.setFileName(clientRegisterVar);
-                if (TARGET_FILE.exists()){
+            if (QFile::exists(natfreeTie)){
+                if (QFile::exists(clientRegisterVar)){
                     QVariantList ret=getCurrentCart();
                     if (!ret[0].toBool()){
                         if (ret[1].toInt()==0){
@@ -141,6 +142,40 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
     qDebug()<<"[CLIENT_REGISTER]: Client Register Available: "<<isAvailable;
     return result;
 
+}
+
+void ClientRegisterWidgetUtils::getCurrentInfo(){
+
+    QThreadPool::globalInstance()->start([this]() {
+        qDebug()<<"[CLIENT_REGISTER]: Getting current info";
+
+        bool isEnable=false;
+        bool isError=false;
+        bool canCreateWatcher=false;
+        bool isConnectedWithADI=false;
+        int currentCart=0;
+
+        if (isWifiAlu() && QFile::exists(clientRegisterVar)){
+            QVariantList ret=getCurrentCart();
+            currentCart=ret[1].toInt();
+            if (!ret[0].toBool()){
+                if (currentCart>0 && currentCart<15){
+                    isEnable=true;
+                    canCreateWatcher=true;
+                    isConnectedWithADI=isThereConnectionWithADI();
+                }else{
+                    if (currentCart<-1 || currentCart>14){
+                        canCreateWatcher=true;
+                    }
+                }
+            }else{
+                isError=true;
+                canCreateWatcher=true;
+            }
+        }
+        emit getCurrentInfoFinished(isEnable, isError, canCreateWatcher, isConnectedWithADI, currentCart);
+    
+    });
 }
 
 QVariantList ClientRegisterWidgetUtils::getCurrentCart(){

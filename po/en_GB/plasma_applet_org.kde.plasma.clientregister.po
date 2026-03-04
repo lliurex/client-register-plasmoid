@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 17:01+0100\n"
-"PO-Revision-Date: 2025-11-11 17:03+0100\n"
+"POT-Creation-Date: 2026-03-04 15:24+0100\n"
+"PO-Revision-Date: 2026-03-04 15:25+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -17,58 +17,58 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
 
-#: ../applets/clientregister/package/contents/ui/main.qml:79
+#: ../applets/clientregister/package/contents/ui/main.qml:81
 #, kde-format
 msgid "Running test..."
 msgstr ""
 
-#: ../applets/clientregister/package/contents/ui/main.qml:79
+#: ../applets/clientregister/package/contents/ui/main.qml:81
 #, kde-format
 msgid "Test connection with ADI"
 msgstr ""
 
-#: ../applets/clientregister/package/contents/ui/main.qml:89
-#: ../applets/clientregister/package/contents/ui/main.qml:117
+#: ../applets/clientregister/package/contents/ui/main.qml:91
+#: ../applets/clientregister/package/contents/ui/main.qml:119
 #, kde-format
 msgid "Change cart"
 msgstr ""
 
-#: ../applets/clientregister/package/contents/ui/main.qml:108
+#: ../applets/clientregister/package/contents/ui/main.qml:110
 #, kde-format
 msgid "See help"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:36
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:30
 #, kde-format
 msgid "Client Register"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:158
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:138
 #, kde-format
 msgid "Client Register not available in this computer"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:228
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:234
 #, kde-format
 msgid "Laptop assigned to cart: "
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:230
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:236
 #, kde-format
 msgid "Laptop NO assigned to cart"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:241
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:247
 #, kde-format
 msgid "Connected with ADI"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:251
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:257
 #, kde-format
 msgid "No connection to the ADI"
 msgstr ""
 
-#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:270
+#: ../applets/clientregister/plugin/ClientRegisterWidget.cpp:277
 #, kde-format
 msgid "Unable to get cart assigned to laptop"
 msgstr ""
