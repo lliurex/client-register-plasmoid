@@ -11,8 +11,7 @@
 #include <QFileSystemWatcher>
 #include <KIO/CommandLauncherJob>
 #include <QThreadPool>
-
-
+#include <QPointer>
 
 using namespace edupals;
 using namespace std;
@@ -148,17 +147,24 @@ void ClientRegisterWidget::disableApplet(){
 
 void ClientRegisterWidget::launchGui()
 {
-    QThreadPool::globalInstance()->start([this]() {
-        bool isWifi = m_utils->isWifiAlu();
+    QPointer<ClientRegisterWidget>safeThis(this);
 
-        QMetaObject::invokeMethod(this, [this, isWifi]() {
+    QThreadPool::globalInstance()->start([safeThis]() {
+
+        if (!safeThis){
+            return;
+        }
+
+        bool isWifi = safeThis->m_utils->isWifiAlu();
+
+        QMetaObject::invokeMethod(safeThis.data(), [safeThis, isWifi]() {
             if (isWifi) {
                 QString cmd = "lliurex-client-register";
                 auto *job = new KIO::CommandLauncherJob(cmd);
                 job->start();
             } else {
-                m_timer->stop();
-                disableApplet();
+                safeThis->m_timer->stop();
+                safeThis->disableApplet();
             }
         }, Qt::QueuedConnection);
     });
@@ -196,30 +202,37 @@ void ClientRegisterWidget::testConnection(bool isManualCheck)
     }
     checkingConnection = true;
 
-    QThreadPool::globalInstance()->start([this, isManualCheck]() {
-        bool isWifi = m_utils->isWifiAlu(); 
+    QPointer<ClientRegisterWidget>safeThis(this);
+
+    QThreadPool::globalInstance()->start([safeThis, isManualCheck]() {
+
+        if (!safeThis){
+            return;
+        }
+
+        bool isWifi = safeThis->m_utils->isWifiAlu(); 
         bool connected=false;
 
         if (isWifi){
-            connected = m_utils->isThereConnectionWithADI();
+            connected = safeThis->m_utils->isThereConnectionWithADI();
         }
     
-        QMetaObject::invokeMethod(this, [this, isWifi, connected, isManualCheck]() {
+        QMetaObject::invokeMethod(safeThis.data(), [safeThis, isWifi, connected, isManualCheck]() {
             if (!isWifi){
-                m_timer->stop();
-                disableApplet();
+                safeThis->m_timer->stop();
+                safeThis->disableApplet();
             }else{
-                if (connectedWithServer != connected) {
-                    connectedWithServer = connected;
-                    updateWidgetFeedbak();
+                if (safeThis->connectedWithServer != connected) {
+                    safeThis->connectedWithServer = connected;
+                    safeThis->updateWidgetFeedbak();
                 }
             }
-            checkingConnection = false;
+            safeThis->checkingConnection = false;
             if (!isManualCheck) {
-                manualCheckCount = 0;
-                setCanTest(true);
+                safeThis->manualCheckCount = 0;
+                safeThis->setCanTest(true);
             }
-            setTestInProgress(false);
+            safeThis->setTestInProgress(false);
             
         },Qt::QueuedConnection);
     });

@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QThreadPool>
+#include <QPointer>
 
 #include <n4d.hpp>
 #include <variant.hpp>
@@ -83,18 +84,26 @@ QString ClientRegisterWidgetUtils::getInstalledVersion(){
 
 void ClientRegisterWidgetUtils::getWidgetStatus(){
 
-    QThreadPool::globalInstance()->start([this]() {
+    QPointer<ClientRegisterWidgetUtils>safeThis(this);
+
+    QThreadPool::globalInstance()->start([safeThis]() {
+
+        if (!safeThis){
+            return;
+        }
+
         bool isAvailable=false;
         bool isError=false;
         QVariantList result;
 
-        if (showWidget()){
-            result=isClientRegisterAvailable();
+        if (safeThis->showWidget()){
+            result=safeThis->isClientRegisterAvailable();
             isAvailable=result[0].toBool();
             isError=result[1].toBool();
         }
-
-        emit getWidgetStatusFinished(isAvailable, isError);
+        if (safeThis){
+            emit safeThis->getWidgetStatusFinished(isAvailable, isError);
+        }
     });
 
 }  
@@ -146,7 +155,13 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
 
 void ClientRegisterWidgetUtils::getCurrentInfo(){
 
-    QThreadPool::globalInstance()->start([this]() {
+    QPointer<ClientRegisterWidgetUtils>safeThis(this);
+
+    QThreadPool::globalInstance()->start([safeThis]() {
+
+        if (!safeThis){
+            return;
+        }
         qDebug()<<"[CLIENT_REGISTER]: Getting current info";
 
         bool isEnable=false;
@@ -155,14 +170,14 @@ void ClientRegisterWidgetUtils::getCurrentInfo(){
         bool isConnectedWithADI=false;
         int currentCart=0;
 
-        if (isWifiAlu() && QFile::exists(clientRegisterVar)){
-            QVariantList ret=getCurrentCart();
+        if (safeThis->isWifiAlu() && QFile::exists(safeThis->clientRegisterVar)){
+            QVariantList ret=safeThis->getCurrentCart();
             currentCart=ret[1].toInt();
             if (!ret[0].toBool()){
                 if (currentCart>0 && currentCart<15){
                     isEnable=true;
                     canCreateWatcher=true;
-                    isConnectedWithADI=isThereConnectionWithADI();
+                    isConnectedWithADI=safeThis->isThereConnectionWithADI();
                 }else{
                     if (currentCart<-1 || currentCart>14){
                         canCreateWatcher=true;
@@ -173,8 +188,9 @@ void ClientRegisterWidgetUtils::getCurrentInfo(){
                 canCreateWatcher=true;
             }
         }
-        emit getCurrentInfoFinished(isEnable, isError, canCreateWatcher, isConnectedWithADI, currentCart);
-    
+        if (safeThis){
+            emit safeThis->getCurrentInfoFinished(isEnable, isError, canCreateWatcher, isConnectedWithADI, currentCart);
+        }
     });
 }
 
