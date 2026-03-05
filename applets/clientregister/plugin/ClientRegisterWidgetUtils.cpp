@@ -4,6 +4,8 @@
 #include <QDir>
 #include <QTextStream>
 #include <QDebug>
+#include <QPointer>
+
 #include <QtConcurrent>
 
 #include <n4d.hpp>
