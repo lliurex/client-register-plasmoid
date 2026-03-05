@@ -4,12 +4,12 @@
 #include <KLocalizedString>
 #include <KFormat>
 #include <KNotification>
+#include <KIO/CommandLauncherJob>
+
 #include <QTimer>
-#include <QStandardPaths>
-#include <QDebug>
 #include <QFile>
 #include <QFileSystemWatcher>
-#include <KIO/CommandLauncherJob>
+#include <QDebug>
 #include <QThreadPool>
 #include <QPointer>
 
@@ -70,7 +70,7 @@ void ClientRegisterWidget::createWatcher(){
     if (TARGET_FILE.exists()){
         if (!createFileWatcher){
             createFileWatcher=true;
-            connect(watcher,SIGNAL(fileChanged(QString)),this,SLOT(getInfo()));
+            connect(watcher,&QFileSystemWatcher::fileChanged,this,&ClientRegisterWidget::getInfo);
             watcher->addPath(m_utils->clientRegisterVar);
         }
     }else{

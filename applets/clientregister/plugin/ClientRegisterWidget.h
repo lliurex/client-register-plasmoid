@@ -1,19 +1,20 @@
 #ifndef PLASMA_CLIENT_REGISTER_WIDGET_H
 #define PLASMA_CLIENT_REGISTER_WIDGET_H
 
+#include <KNotification>
+
 #include <QObject>
 #include <QProcess>
 #include <QPointer>
-#include <KNotification>
 #include <QDir>
 #include <QFile>
 #include <QThread>
+
 #include <QFileSystemWatcher>
 #include <KIO/CommandLauncherJob>
 
-#include <variant.hpp>
-
 #include "ClientRegisterWidgetUtils.h"
+
 using namespace edupals;
 using namespace edupals::variant;
 

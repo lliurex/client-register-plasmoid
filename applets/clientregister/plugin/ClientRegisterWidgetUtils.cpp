@@ -9,6 +9,7 @@
 
 #include <n4d.hpp>
 #include <variant.hpp>
+#include <json.hpp>
 
 using namespace edupals;
 using namespace edupals::variant;
