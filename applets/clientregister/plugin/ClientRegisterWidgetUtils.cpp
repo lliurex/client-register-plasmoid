@@ -1,29 +1,16 @@
 #include "ClientRegisterWidgetUtils.h"
 
 #include <QFile>
-#include <QDateTime>
-#include <QFileInfo>
-#include <QRegularExpression>
-#include <QStandardPaths>
-#include <QDebug>
+#include <QDir>
 #include <QTextStream>
-#include <QJsonObject>
-#include <QList>
-#include <KLocalizedString>
-#include <sys/types.h>
+#include <QDebug>
+#include <QtConcurrent>
 
-#include <grp.h>
-#include <pwd.h>
 #include <n4d.hpp>
 #include <variant.hpp>
 #include <json.hpp>
 
-#include <tuple>
-#include <sys/types.h>
-#include <QDebug>
-
 using namespace edupals;
-using namespace std;
 using namespace edupals::variant;
 
 
@@ -93,6 +80,32 @@ QString ClientRegisterWidgetUtils::getInstalledVersion(){
     }
     return installedVersion;
 
+}
+
+void ClientRegisterWidgetUtils::getWidgetStatus(){
+
+    QPointer<ClientRegisterWidgetUtils>safeThis(this);
+
+    QtConcurrent::run([safeThis]() {
+
+        if (!safeThis){
+            return;
+        }
+
+        bool isAvailable=false;
+        bool isError=false;
+        QVariantList result;
+
+        if (safeThis->showWidget()){
+            result=safeThis->isClientRegisterAvailable();
+            isAvailable=result[0].toBool();
+            isError=result[1].toBool();
+        }
+        if (safeThis){
+            emit safeThis->getWidgetStatusFinished(isAvailable, isError);
+        }
+    });
+
 }  
 
 bool ClientRegisterWidgetUtils::showWidget(){
@@ -106,14 +119,11 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
     bool isError=false;
     QVariantList result;
 
-    TARGET_FILE.setFileName(natfreeAdi);
 
-    if (!TARGET_FILE.exists()){
+    if (!QFile::exists(natfreeAdi)){
         if (isWifiAlu()){
-            TARGET_FILE.setFileName(natfreeTie);
-            if (TARGET_FILE.exists()){
-                TARGET_FILE.setFileName(clientRegisterVar);
-                if (TARGET_FILE.exists()){
+            if (QFile::exists(natfreeTie)){
+                if (QFile::exists(clientRegisterVar)){
                     QVariantList ret=getCurrentCart();
                     if (!ret[0].toBool()){
                         if (ret[1].toInt()==0){
@@ -141,6 +151,47 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
     qDebug()<<"[CLIENT_REGISTER]: Client Register Available: "<<isAvailable;
     return result;
 
+}
+
+void ClientRegisterWidgetUtils::getCurrentInfo(){
+
+    QPointer<ClientRegisterWidgetUtils>safeThis(this);
+
+    QtConcurrent::run([safeThis]() {
+
+        if (!safeThis){
+            return;
+        }
+        qDebug()<<"[CLIENT_REGISTER]: Getting current info";
+
+        bool isEnable=false;
+        bool isError=false;
+        bool canCreateWatcher=false;
+        bool isConnectedWithADI=false;
+        int currentCart=0;
+
+        if (safeThis->isWifiAlu() && QFile::exists(safeThis->clientRegisterVar)){
+            QVariantList ret=safeThis->getCurrentCart();
+            currentCart=ret[1].toInt();
+            if (!ret[0].toBool()){
+                if (currentCart>0 && currentCart<15){
+                    isEnable=true;
+                    canCreateWatcher=true;
+                    isConnectedWithADI=safeThis->isThereConnectionWithADI();
+                }else{
+                    if (currentCart<-1 || currentCart>14){
+                        canCreateWatcher=true;
+                    }
+                }
+            }else{
+                isError=true;
+                canCreateWatcher=true;
+            }
+        }
+        if (safeThis){
+            emit safeThis->getCurrentInfoFinished(isEnable, isError, canCreateWatcher, isConnectedWithADI, currentCart);
+        }
+    });
 }
 
 QVariantList ClientRegisterWidgetUtils::getCurrentCart(){

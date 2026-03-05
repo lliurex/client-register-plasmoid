@@ -4,22 +4,17 @@
 #include <KLocalizedString>
 #include <KFormat>
 #include <KNotification>
-#include <KRun>
+#include <KIO/CommandLauncherJob>
+
 #include <QTimer>
-#include <QStandardPaths>
 #include <QDebug>
 #include <QFile>
 #include <QFileSystemWatcher>
-#include <QThread>
-#include <QtCore/QStringList>
-#include <QJsonObject>
-#include <variant.hpp>
-#include <json.hpp>
 #include <QDebug>
-#include <KIO/CommandLauncherJob>
-#include <QtConcurrent/QtConcurrent>
-#include <QFuture>
+#include <QThreadPool>
+#include <QPointer>
 
+#include <QtConcurrent>
 
 using namespace edupals;
 using namespace std;
@@ -38,10 +33,12 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
     TARGET_FILE.setFileName(m_utils->clientRegisterVar);
     firstRun=true;
     bool isManualCheck=false;
+    connect(m_utils,&ClientRegisterWidgetUtils::getWidgetStatusFinished,this,&ClientRegisterWidget::initPlasmoid);
     connect(m_timer, &QTimer::timeout, this, [this, isManualCheck](){
         this->ClientRegisterWidget::testConnection(isManualCheck);
         });
 
+    connect(m_utils,&ClientRegisterWidgetUtils::getCurrentInfoFinished,this,&ClientRegisterWidget::updateInfo);
     setSubToolTip(notificationTitle);
     plasmoidMode();
 
@@ -49,22 +46,20 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
 
 void ClientRegisterWidget::plasmoidMode(){
 
-    if (m_utils->showWidget()){
-        QVariantList ret=m_utils->isClientRegisterAvailable();
-        if (ret[0].toBool()){
-            if (TARGET_FILE.exists()){
-                createWatcher();
-            }
-            if (!ret[1].toBool()){
-                m_timer->start(defaultTimeOutToCheck);
-                updateInfo();
-            }else{
-                showError();
-            }
+     m_utils->getWidgetStatus();
+}
+
+void ClientRegisterWidget::initPlasmoid(bool isAvailable, bool isError){
+
+    if (isAvailable){
+        createWatcher();
+        if (!isError){
+            m_timer->start(defaultTimeOutToCheck);
+            getInfo();  
         }else{
-            disableApplet();
+            showError();
         }
-        
+
     }else{
         disableApplet();
     }
@@ -78,7 +73,7 @@ void ClientRegisterWidget::createWatcher(){
     if (TARGET_FILE.exists()){
         if (!createFileWatcher){
             createFileWatcher=true;
-            connect(watcher,SIGNAL(fileChanged(QString)),this,SLOT(updateInfo()));
+            connect(watcher,&QFileSystemWatcher::fileChanged,this,&ClientRegisterWidget::getInfo);
             watcher->addPath(m_utils->clientRegisterVar);
         }
     }else{
@@ -86,74 +81,58 @@ void ClientRegisterWidget::createWatcher(){
     }
 } 
 
-void ClientRegisterWidget::updateInfo(){
+void ClientRegisterWidget::getInfo(){
 
     if (!isWorking){
         qDebug()<<"[CLIENT_REGISTER]: Detecting changed in n4d vars directory";
         isWorking=true;
-        bool disable=false;
-        bool canCreateWatcher=false;
-        bool error=false;
-        showNotification=true;
-        int tmpCart=0;
-       
-        if (m_utils->isWifiAlu() && TARGET_FILE.exists()){
-            qDebug()<<"[CLIENT_REGISTER]: Updating info...";
-            QVariantList ret=m_utils->getCurrentCart();
-            tmpCart=ret[1].toInt();
-            if (!ret[0].toBool()){
-                if (tmpCart==0){
-                    disable=true;
-                }else{
-                    if (tmpCart>14){
-                        disable=true;
-                    }else{
-                        if (tmpCart<-1){
-                            disable=true;
-                        }
-                    }
-                    canCreateWatcher=true;
-                }
-            }else{
-                canCreateWatcher=true;
-                error=true;
-            }
-            if (canCreateWatcher){
-                createWatcher();
-            }
-        }else{
-            disable=true;
-        }
+        m_utils->getCurrentInfo();
+    }
 
-        if (!error){
-            if (disable){
-                m_timer->stop();
-                isWorking=false;
-                firstRun=true;
-                disableApplet();
+} 
+
+void ClientRegisterWidget::updateInfo(bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart){
+
+    showNotification=true;
+    if (canCreateWatcher){
+        createWatcher();
+    }
+
+    if (!isError){
+        if (isEnable){
+           if (initCart!=currentCart){
+                initCart=currentCart;
             }else{
-                if (initCart!=tmpCart){
-                    initCart=tmpCart;
-                }else{
+                if (!firstRun){
                     showNotification=false;
                 }
-                testConnection(false);
-                if (!updateWidget){
-                    updateWidgetFeedbak();
-                }
-                changeTryIconState(0);
-                setCanEdit(true);
-                setCanTest(true);
-                isWorking=false;
             }
+            connectedWithServer=isConnectedWithADI;
+            if (!updateWidget || firstRun){
+                if (firstRun){
+                    firstRun=false;
+                }
+                updateWidgetFeedbak();
+            }
+            changeTryIconState(0);
+            setCanEdit(true);
+            setCanTest(true);
+            isWorking=false;
+
         }else{
             m_timer->stop();
-            showError();
-            showNotification=true;
             isWorking=false;
             firstRun=true;
+            disableApplet();
         }
-    }
+    }else{
+        m_timer->stop();
+        showError();
+        showNotification=true;
+        isWorking=false;
+        firstRun=true;
+    }      
+       
 }
 
 void ClientRegisterWidget::disableApplet(){
@@ -171,15 +150,28 @@ void ClientRegisterWidget::disableApplet(){
 
 void ClientRegisterWidget::launchGui()
 {
-    if (m_utils->isWifiAlu()){
-        KIO::CommandLauncherJob *job = nullptr;
-        QString cmd="lliurex-client-register";
-        job = new KIO::CommandLauncherJob(cmd);
-        job->start();
-    }else{
-        m_timer->stop();
-        disableApplet();
-    }
+    
+    QPointer<ClientRegisterWidget>safeThis(this);
+
+    QThreadPool::globalInstance()->start([safeThis]() {
+
+        if (!safeThis){
+            return;
+        }
+
+        bool isWifi = safeThis->m_utils->isWifiAlu();
+
+        QMetaObject::invokeMethod(safeThis.data(), [safeThis, isWifi]() {
+            if (isWifi) {
+                QString cmd = "lliurex-client-register";
+                auto *job = new KIO::CommandLauncherJob(cmd);
+                job->start();
+            } else {
+                safeThis->m_timer->stop();
+                safeThis->disableApplet();
+            }
+        }, Qt::QueuedConnection);
+    });
 }
 
 void ClientRegisterWidget::openHelp()
@@ -193,55 +185,63 @@ void ClientRegisterWidget::openHelp()
 
 void ClientRegisterWidget::launchTest(){
 
-    if (m_utils->isWifiAlu()){
-        if (!checkingConnection){
-           if (manualCheckCount<maxManualCheck){
-                setTestInProgress(true);
-                QFuture<void> future=QtConcurrent::run([this](){
-                    this->ClientRegisterWidget::testConnection(true);
-                });
-                manualCheckCount+=1;
-           }
-           if (manualCheckCount>=maxManualCheck){
-                setCanTest(false);
-           }
-        }
-    }else{
-        m_timer->stop();
-        disableApplet();
+    if (checkingConnection || manualCheckCount >= maxManualCheck) {
+        return;
+    }
+
+    setTestInProgress(true);
+    testConnection(true); 
+    
+    manualCheckCount++;
+    if (manualCheckCount >= maxManualCheck) {
+        setCanTest(false);
     }
 }
 
 void ClientRegisterWidget::testConnection(bool isManualCheck)
 {
 
-    if (!checkingConnection){
-        checkingConnection=true;
-        bool ret=m_utils->isThereConnectionWithADI();
-
-        if (connectedWithServer != ret ){
-            connectedWithServer=ret;
-            updateWidget=true;
-        }else{
-            if (firstRun){
-                showNotification=true;
-                updateWidget=true;
-            }
-        }
-
-        if (updateWidget){
-            firstRun=false;
-            updateWidgetFeedbak();
-        }
-
-        checkingConnection=false;
-        updateWidget=false;
-        if (!isManualCheck){
-            manualCheckCount=0;
-            setCanTest(true);
-        }
-        setTestInProgress(false);
+  
+    if (checkingConnection){
+        return;
     }
+    checkingConnection = true;
+
+    QPointer<ClientRegisterWidget>safeThis(this);
+
+    QThreadPool::globalInstance()->start([safeThis, isManualCheck]() {
+
+        if (!safeThis){
+            return;
+        }
+
+        bool isWifi = safeThis->m_utils->isWifiAlu(); 
+        bool connected=false;
+
+        if (isWifi){
+            connected = safeThis->m_utils->isThereConnectionWithADI();
+        }
+    
+        QMetaObject::invokeMethod(safeThis.data(), [safeThis, isWifi, connected, isManualCheck]() {
+            if (!isWifi){
+                safeThis->m_timer->stop();
+                safeThis->disableApplet();
+            }else{
+                if (safeThis->connectedWithServer != connected) {
+                    safeThis->connectedWithServer = connected;
+                    safeThis->updateWidgetFeedbak();
+                }
+            }
+            safeThis->checkingConnection = false;
+            if (!isManualCheck) {
+                safeThis->manualCheckCount = 0;
+                safeThis->setCanTest(true);
+            }
+            safeThis->setTestInProgress(false);
+            
+        },Qt::QueuedConnection);
+    });
+
 }
 
 void ClientRegisterWidget::updateWidgetFeedbak()
@@ -276,7 +276,8 @@ void ClientRegisterWidget::updateWidgetFeedbak()
     }
     setIconName(tmpIcon);
     setSubToolTip(notificationBody+"\n"+notificationServerBody); 
-    
+    updateWidget=false;
+
     if (showNotification){
         m_notification=KNotification::event(QStringLiteral("Update"),notificationBody,notificationServerBody,tmpIcon,nullptr,KNotification::CloseOnTimeout,QStringLiteral("clientregister"));
     }
