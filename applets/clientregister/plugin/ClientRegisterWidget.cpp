@@ -7,7 +7,6 @@
 #include <KIO/CommandLauncherJob>
 
 #include <QTimer>
-#include <QDebug>
 #include <QFile>
 #include <QFileSystemWatcher>
 #include <QDebug>
