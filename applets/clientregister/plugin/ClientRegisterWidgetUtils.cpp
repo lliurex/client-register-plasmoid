@@ -53,6 +53,7 @@ void ClientRegisterWidgetUtils::startUtils(){
 
 void ClientRegisterWidgetUtils::cleanCache(){
 
+    qDebug()<<"[CLIENT_REGISTER]: Clean cache";
     QFile CURRENT_VERSION_TOKEN;
     QDir cacheDir("/home/"+user+"/.cache/plasmashell/qmlcache");
     QString currentVersion="";

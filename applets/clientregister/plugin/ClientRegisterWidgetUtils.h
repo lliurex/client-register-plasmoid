@@ -42,7 +42,6 @@ private:
      
     QString user;
     n4d::Client client;
-    QFile TARGET_FILE;
     QString natfreeTie="/usr/bin/natfree-tie";
     QString natfreeAdi="/usr/bin/natfree-adi";
 
