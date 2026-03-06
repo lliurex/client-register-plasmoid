@@ -25,11 +25,12 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
 
    
 {
-    m_utils->cleanCache();
     notificationTitle=i18n("Client Register");
     TARGET_FILE.setFileName(m_utils->clientRegisterVar);
     firstRun=true;
     bool isManualCheck=false;
+    
+    connect(m_utils,&ClientRegisterWidgetUtils::startUtilsFinished,this,&ClientRegisterWidget::handleStartFinished);
     connect(m_utils,&ClientRegisterWidgetUtils::getWidgetStatusFinished,this,&ClientRegisterWidget::initPlasmoid);
     connect(m_timer, &QTimer::timeout, this, [this, isManualCheck](){
         this->ClientRegisterWidget::testConnection(isManualCheck);
@@ -37,15 +38,24 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
 
     connect(m_utils,&ClientRegisterWidgetUtils::getCurrentInfoFinished,this,&ClientRegisterWidget::updateInfo);
     setSubToolTip(notificationTitle);
-    plasmoidMode();
+    m_utils->startUtils();
 
 }  
 
-void ClientRegisterWidget::plasmoidMode(){
+void ClientRegisterWidget::handleStartFinished(bool startOk){
 
-     m_utils->getWidgetStatus();
-
+    if (startOk){
+        m_utils->getWidgetStatus();
+    }else{
+        notificationBody=i18n("Client Register not be initialized correctly");
+        setCanEdit(false);
+        setIconName("client_register_error");
+        setIconNamePh("client_register_error");
+        setSubToolTip(notificationBody);
+        changeTryIconState(0);
+    }
 }
+
 void ClientRegisterWidget::initPlasmoid(bool isAvailable, bool isError){
 
     if (isAvailable){
@@ -147,27 +157,35 @@ void ClientRegisterWidget::disableApplet(){
 
 void ClientRegisterWidget::launchGui()
 {
-    QPointer<ClientRegisterWidget>safeThis(this);
+    
+    if (!m_launchGuiInProgress){
+        
+        setLaunchGuiInProgress(true);
+        QPointer<ClientRegisterWidget>safeThis(this);
 
-    QThreadPool::globalInstance()->start([safeThis]() {
+        QThreadPool::globalInstance()->start([safeThis]() {
 
-        if (!safeThis){
-            return;
-        }
-
-        bool isWifi = safeThis->m_utils->isWifiAlu();
-
-        QMetaObject::invokeMethod(safeThis.data(), [safeThis, isWifi]() {
-            if (isWifi) {
-                QString cmd = "lliurex-client-register";
-                auto *job = new KIO::CommandLauncherJob(cmd);
-                job->start();
-            } else {
-                safeThis->m_timer->stop();
-                safeThis->disableApplet();
+            if (!safeThis){
+                return;
             }
-        }, Qt::QueuedConnection);
-    });
+            bool isWifi = safeThis->m_utils->isWifiAlu();
+
+            QMetaObject::invokeMethod(safeThis.data(), [safeThis, isWifi]() {
+                if (isWifi) {
+                    QString cmd = "lliurex-client-register";
+                    auto *job = new KIO::CommandLauncherJob(cmd);
+                    job->start();
+                    safeThis->setLaunchGuiInProgress(false);
+
+                } else {
+                    safeThis->m_timer->stop();
+                    safeThis->disableApplet();
+                }
+            }, Qt::QueuedConnection);
+        });
+    }else{
+        return;
+    }
 }
 
 void ClientRegisterWidget::openHelp()
@@ -431,6 +449,20 @@ void ClientRegisterWidget::setTestInProgress(bool testInProgress){
     if (m_testInProgress!=testInProgress){
         m_testInProgress=testInProgress;
         emit testInProgressChanged();
+    }
+
+}
+
+bool ClientRegisterWidget::launchGuiInProgress(){
+
+    return m_launchGuiInProgress;
+}
+
+void ClientRegisterWidget::setLaunchGuiInProgress(bool launchGuiInProgress){
+
+    if (m_launchGuiInProgress!=launchGuiInProgress){
+        m_launchGuiInProgress=launchGuiInProgress;
+        emit launchGuiInProgressChanged();
     }
 
 }

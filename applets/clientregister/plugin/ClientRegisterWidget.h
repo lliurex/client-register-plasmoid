@@ -37,6 +37,7 @@ class ClientRegisterWidget : public QObject
     Q_PROPERTY(bool canEdit READ canEdit NOTIFY canEditChanged)
     Q_PROPERTY(bool canTest READ canTest NOTIFY canTestChanged)
     Q_PROPERTY(bool testInProgress READ testInProgress NOTIFY testInProgressChanged)
+    Q_PROPERTY(bool launchGuiInProgress READ launchGuiInProgress NOTIFY launchGuiInProgressChanged)
     Q_ENUMS(TrayStatus)
 
 public:
@@ -79,6 +80,9 @@ public:
     bool testInProgress();
     void setTestInProgress(bool);
 
+    bool launchGuiInProgress();
+    void setLaunchGuiInProgress(bool);
+
 public slots:
     
     void launchGui();
@@ -96,6 +100,7 @@ signals:
     void canEditChanged();
     void canTestChanged();
     void testInProgressChanged();
+    void launchGuiInProgressChanged();
 
 private:
 
@@ -112,6 +117,7 @@ private:
     bool m_testInProgress=false;
     bool checkingConnection=false;
     bool connectedWithServer=false;
+    bool m_launchGuiInProgress=false;
     int initCart=1;
     QString notificationTitle;
     QString notificationBody;
@@ -128,7 +134,7 @@ private:
     int manualCheckCount=0;
     int defaultTimeOutToCheck=120000; 
     QPointer<KNotification> m_notification;
-    void plasmoidMode();
+
     void createWatcher();
     void disableApplet();
     void showError();
@@ -137,6 +143,8 @@ private:
 
 
 private slots:
+    
+    void handleStartFinished(bool startOk);
     void initPlasmoid(bool isAvailable, bool isError);
     void getInfo();
     void updateInfo(bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);

@@ -20,12 +20,40 @@ ClientRegisterWidgetUtils::ClientRegisterWidgetUtils(QObject *parent)
        
 {
     user=qgetenv("USER");
-    client=n4d::Client("https://127.0.0.1:9779");
   
+}
+
+void ClientRegisterWidgetUtils::startUtils(){
+
+    QPointer<ClientRegisterWidgetUtils>safeThis(this);
+
+    QThreadPool::globalInstance()->start([safeThis]() {
+
+        if (!safeThis){
+            return;
+        }
+
+        bool startOk=false;
+
+        try{
+            safeThis->cleanCache();
+            safeThis->client=n4d::Client("https://127.0.0.1:9779");
+            startOk=true;
+        }catch (std::exception& e){
+            qDebug()<<"[CLIENT_REGISTER]: Error creating n4d client: " <<e.what();
+        } 
+
+        if (safeThis){
+            emit safeThis->startUtilsFinished(startOk);
+        }
+
+    });
 }
 
 void ClientRegisterWidgetUtils::cleanCache(){
 
+    qDebug()<<"[CLIENT_REGISTER]: Clean cache";
+    
     QFile CURRENT_VERSION_TOKEN;
     QDir cacheDir("/home/"+user+"/.cache/plasmashell/qmlcache");
     QString currentVersion="";

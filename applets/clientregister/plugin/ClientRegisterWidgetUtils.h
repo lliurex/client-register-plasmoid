@@ -24,7 +24,7 @@ public:
 
    ClientRegisterWidgetUtils(QObject *parent = nullptr);
 
-   void cleanCache();
+   void startUtils();
    void getWidgetStatus();
    void getCurrentInfo();
    bool isWifiAlu();
@@ -35,6 +35,7 @@ public:
 
 signals:
 
+    void startUtilsFinished(bool startOk);
     void getWidgetStatusFinished (bool isAvailable, bool isError);
     void getCurrentInfoFinished (bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);
 
@@ -45,6 +46,8 @@ private:
     n4d::Client client;
     QString natfreeTie="/usr/bin/natfree-tie";
     QString natfreeAdi="/usr/bin/natfree-adi";
+
+    void cleanCache();
     QString getInstalledVersion();
     bool showWidget();
     QVariantList isClientRegisterAvailable();
