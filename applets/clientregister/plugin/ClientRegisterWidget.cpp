@@ -42,7 +42,7 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
 
 }  
 
-void ClientRegisterWidget::handleWidgetFinished(bool startOk){
+void ClientRegisterWidget::handleStartFinished(bool startOk){
 
     if (startOk){
         m_utils->getWidgetStatus();
