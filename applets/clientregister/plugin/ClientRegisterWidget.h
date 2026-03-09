@@ -147,7 +147,7 @@ private slots:
     void handleStartFinished(bool startOk);
     void initPlasmoid(bool isAvailable, bool isError);
     void getInfo();
-    void updateInfo(bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);
+    void getInfoFinished(bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);
 
 };
 

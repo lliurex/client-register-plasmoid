@@ -23,7 +23,7 @@ ClientRegisterWidgetUtils::ClientRegisterWidgetUtils(QObject *parent)
   
 }
 
-void ClientRegisterWidgetUtils::startUtils(){
+void ClientRegisterWidgetUtils::startWidget(){
 
     QPointer<ClientRegisterWidgetUtils>safeThis(this);
 
@@ -44,7 +44,7 @@ void ClientRegisterWidgetUtils::startUtils(){
         } 
 
         if (safeThis){
-            emit safeThis->startUtilsFinished(startOk);
+            emit safeThis->startWidgetFinished(startOk);
         }
 
     });
