@@ -87,6 +87,7 @@ Item {
                 id:editBtn
                 height:35
                 visible:clientRegisterWidget.canEdit?true:false
+                enabled:clientRegisterWidget.launchGuiInProgress?false:true;
                 display:AbstractButton.TextBesideIcon
                 icon.name:"lliurex-client-register"
                 text:i18n("Change cart")

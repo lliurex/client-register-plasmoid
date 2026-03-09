@@ -24,26 +24,33 @@ public:
 
    ClientRegisterWidgetUtils(QObject *parent = nullptr);
 
-   void cleanCache();
-   QVariantList getCurrentCart();
-   bool showWidget();
-   QVariantList isClientRegisterAvailable();
-   bool isThereConnectionWithADI();
+   void startWidget();
+   void getWidgetStatus();
+   void getCurrentInfo();
    bool isWifiAlu();
+   bool isThereConnectionWithADI();
 
-   QString user;
    QString clientRegisterVar="/var/lib/n4d/variables/CONTROLLED_CLASSROOM";
-   QString natfreeTie="/usr/bin/natfree-tie";
-   QString natfreeAdi="/usr/bin/natfree-adi";
+
+signals:
+
+    void startWidgetFinished(bool startOk);
+    void getWidgetStatusFinished (bool isAvailable, bool isError);
+    void getCurrentInfoFinished (bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);
 
 private:    
      
+    QString user;
     n4d::Client client;
-    QFile TARGET_FILE;
+    QString natfreeTie="/usr/bin/natfree-tie";
+    QString natfreeAdi="/usr/bin/natfree-adi";
+
+    void cleanCache();
     QString getInstalledVersion();
+    bool showWidget();
+    QVariantList isClientRegisterAvailable();
+    QVariantList getCurrentCart();
      
 };
-
-
 
 #endif // PLASMA_CLASSROOM_CONTROL_WIDGET_UTILS_H
