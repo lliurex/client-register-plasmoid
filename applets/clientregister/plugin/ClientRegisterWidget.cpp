@@ -32,15 +32,15 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
     firstRun=true;
     bool isManualCheck=false;
     
-    connect(m_utils,&ClientRegisterWidgetUtils::startUtilsFinished,this,&ClientRegisterWidget::handleStartFinished);
+    connect(m_utils,&ClientRegisterWidgetUtils::startWidgetFinished,this,&ClientRegisterWidget::handleStartFinished);
     connect(m_utils,&ClientRegisterWidgetUtils::getWidgetStatusFinished,this,&ClientRegisterWidget::initPlasmoid);
     connect(m_timer, &QTimer::timeout, this, [this, isManualCheck](){
         this->ClientRegisterWidget::testConnection(isManualCheck);
         });
 
-    connect(m_utils,&ClientRegisterWidgetUtils::getCurrentInfoFinished,this,&ClientRegisterWidget::updateInfo);
+    connect(m_utils,&ClientRegisterWidgetUtils::getCurrentInfoFinished,this,&ClientRegisterWidget::getInfoFinished);
     setSubToolTip(notificationTitle);
-    m_utils->startUtils();
+    m_utils->startWidget();
 
 }  
 
@@ -100,7 +100,7 @@ void ClientRegisterWidget::getInfo(){
 
 } 
 
-void ClientRegisterWidget::updateInfo(bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart){
+void ClientRegisterWidget::getInfoFinished(bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart){
 
     showNotification=true;
     if (canCreateWatcher){

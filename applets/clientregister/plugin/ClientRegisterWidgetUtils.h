@@ -24,7 +24,7 @@ public:
 
    ClientRegisterWidgetUtils(QObject *parent = nullptr);
 
-   void startUtils();
+   void startWidget();
    void getWidgetStatus();
    void getCurrentInfo();
    bool isWifiAlu();
@@ -34,7 +34,7 @@ public:
 
 signals:
 
-    void startUtilsFinished(bool startOk);
+    void startWidgetFinished(bool startOk);
     void getWidgetStatusFinished (bool isAvailable, bool isError);
     void getCurrentInfoFinished (bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);
 
