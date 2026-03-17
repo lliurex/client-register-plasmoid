@@ -39,12 +39,17 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
         });
 
     connect(m_utils,&ClientRegisterWidgetUtils::getCurrentInfoFinished,this,&ClientRegisterWidget::getInfoFinished);
-    setSubToolTip(notificationTitle);
-    m_utils->startWidget();
+    
+    QTimer::singleShot(0,this,[this](){
+        m_utils->startWidget();
+
+    });
 
 }  
 
 void ClientRegisterWidget::handleStartFinished(bool startOk){
+
+    setSubToolTip(notificationTitle);
 
     if (startOk){
         m_utils->getWidgetStatus();
