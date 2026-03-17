@@ -5,6 +5,8 @@
 #include <QProcess>
 #include <QFile>
 #include <QDir>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include <n4d.hpp>
 #include <variant.hpp>
@@ -40,13 +42,11 @@ signals:
 
 private:    
      
-    QString user;
     n4d::Client client;
+    QMutex clientMutex;
     QString natfreeTie="/usr/bin/natfree-tie";
     QString natfreeAdi="/usr/bin/natfree-adi";
 
-    void cleanCache();
-    QString getInstalledVersion();
     bool showWidget();
     QVariantList isClientRegisterAvailable();
     QVariantList getCurrentCart();
