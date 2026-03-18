@@ -13,6 +13,7 @@
 #include <QFileSystemWatcher>
 #include <KIO/CommandLauncherJob>
 
+#include <QtQml/qqmlregistration.h>
 #include "ClientRegisterWidgetUtils.h"
 
 using namespace edupals;
@@ -26,7 +27,16 @@ class AsyncDbus;
 class ClientRegisterWidget : public QObject
 {
     Q_OBJECT
-
+    QML_ELEMENT
+public:
+    /**
+     * System tray icon states.
+     */
+    enum TrayStatus {
+        ActiveStatus=0,
+        PassiveStatus,
+        HiddenStatus
+    };
 
     Q_PROPERTY(TrayStatus status READ status NOTIFY statusChanged)
     Q_PROPERTY(QString toolTip READ toolTip NOTIFY toolTipChanged)
@@ -38,19 +48,9 @@ class ClientRegisterWidget : public QObject
     Q_PROPERTY(bool canTest READ canTest NOTIFY canTestChanged)
     Q_PROPERTY(bool testInProgress READ testInProgress NOTIFY testInProgressChanged)
     Q_PROPERTY(bool launchGuiInProgress READ launchGuiInProgress NOTIFY launchGuiInProgressChanged)
-    Q_ENUMS(TrayStatus)
-
-public:
-    /**
-     * System tray icon states.
-     */
-    enum TrayStatus {
-        ActiveStatus=0,
-        PassiveStatus,
-        HiddenStatus
-    };
-
-    ClientRegisterWidget(QObject *parent = nullptr);
+    Q_ENUM(TrayStatus)
+    
+    explicit ClientRegisterWidget(QObject *parent = nullptr);
 
     TrayStatus status() const;
     void changeTryIconState (int state);

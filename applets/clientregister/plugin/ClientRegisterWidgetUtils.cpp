@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QThreadPool>
 #include <QPointer>
+#include <QMutexLocker>
 
 #include <n4d.hpp>
 #include <variant.hpp>
@@ -19,7 +20,6 @@ ClientRegisterWidgetUtils::ClientRegisterWidgetUtils(QObject *parent)
     : QObject(parent)
        
 {
-    user=qgetenv("USER");
   
 }
 
@@ -36,7 +36,7 @@ void ClientRegisterWidgetUtils::startWidget(){
         bool startOk=false;
 
         try{
-            safeThis->cleanCache();
+            QMutexLocker locker(&safeThis->clientMutex); 
             safeThis->client=n4d::Client("https://127.0.0.1:9779");
             startOk=true;
         }catch (std::exception& e){
@@ -48,67 +48,6 @@ void ClientRegisterWidgetUtils::startWidget(){
         }
 
     });
-}
-
-void ClientRegisterWidgetUtils::cleanCache(){
-
-    qDebug()<<"[CLIENT_REGISTER]: Clean cache";
-    
-    QFile CURRENT_VERSION_TOKEN;
-    QDir cacheDir("/home/"+user+"/.cache/plasmashell/qmlcache");
-    QString currentVersion="";
-    bool clear=false;
-
-    CURRENT_VERSION_TOKEN.setFileName("/home/"+user+"/.config/client-register-widget.conf");
-    QString installedVersion=getInstalledVersion();
-
-    if (!CURRENT_VERSION_TOKEN.exists()){
-        if (CURRENT_VERSION_TOKEN.open(QIODevice::WriteOnly)){
-            QTextStream data(&CURRENT_VERSION_TOKEN);
-            data<<installedVersion;
-            CURRENT_VERSION_TOKEN.close();
-            clear=true;
-        }
-    }else{
-        if (CURRENT_VERSION_TOKEN.open(QIODevice::ReadOnly)){
-            QTextStream content(&CURRENT_VERSION_TOKEN);
-            currentVersion=content.readLine();
-            CURRENT_VERSION_TOKEN.close();
-        }
-
-        if (currentVersion!=installedVersion){
-            if (CURRENT_VERSION_TOKEN.open(QIODevice::WriteOnly)){
-                QTextStream data(&CURRENT_VERSION_TOKEN);
-                data<<installedVersion;
-                CURRENT_VERSION_TOKEN.close();
-                clear=true;
-            }
-        }
-    } 
-    if (clear){
-        if (cacheDir.exists()){
-            cacheDir.removeRecursively();
-        }
-    }   
-
-}
-
-QString ClientRegisterWidgetUtils::getInstalledVersion(){
-
-    QFile INSTALLED_VERSION_TOKEN;
-    QString installedVersion="";
-    
-    INSTALLED_VERSION_TOKEN.setFileName("/var/lib/client-register-plasmoid/version");
-
-    if (INSTALLED_VERSION_TOKEN.exists()){
-        if (INSTALLED_VERSION_TOKEN.open(QIODevice::ReadOnly)){
-            QTextStream content(&INSTALLED_VERSION_TOKEN);
-            installedVersion=content.readLine();
-            INSTALLED_VERSION_TOKEN.close();
-        }
-    }
-    return installedVersion;
-
 }
 
 void ClientRegisterWidgetUtils::getWidgetStatus(){
@@ -185,8 +124,9 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
 void ClientRegisterWidgetUtils::getCurrentInfo(){
 
     QPointer<ClientRegisterWidgetUtils>safeThis(this);
+    QString tmpClientVar=this->clientRegisterVar;
 
-    QThreadPool::globalInstance()->start([safeThis]() {
+    QThreadPool::globalInstance()->start([safeThis,tmpClientVar]() {
 
         if (!safeThis){
             return;
@@ -199,7 +139,7 @@ void ClientRegisterWidgetUtils::getCurrentInfo(){
         bool isConnectedWithADI=false;
         int currentCart=0;
 
-        if (safeThis->isWifiAlu() && QFile::exists(safeThis->clientRegisterVar)){
+        if (safeThis->isWifiAlu() && QFile::exists(tmpClientVar)){
             QVariantList ret=safeThis->getCurrentCart();
             currentCart=ret[1].toInt();
             if (!ret[0].toBool()){
@@ -229,6 +169,7 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
     int numCart=0;
     QVariantList result;
     Variant cartInfo;
+    QMutexLocker locker(&clientMutex); 
 
     try{
         cartInfo = client.call("ClientRegisterManager","get_current_cart");
@@ -256,7 +197,8 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
 bool ClientRegisterWidgetUtils::isThereConnectionWithADI()
 {
     bool isConnected=false;
-
+    QMutexLocker locker(&clientMutex); 
+    
     try{
         Variant ret=client.call("NatfreeTIE","check_server");
         isConnected=ret;
@@ -266,7 +208,7 @@ bool ClientRegisterWidgetUtils::isThereConnectionWithADI()
         qDebug()<<"[CLIENT_REGISTER]: Testing connection with ADI. Error: "<<e.what();
         return isConnected;
     }
- 
+    
 }
 
 bool ClientRegisterWidgetUtils::isWifiAlu(){

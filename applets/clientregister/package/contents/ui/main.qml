@@ -8,7 +8,7 @@ import org.kde.plasma.components as PC3
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.kirigami as Kirigami
 
-import org.kde.plasma.private.clientregister 1.0
+import org.kde.plasma.private.clientregister
 // Item - the most basic plasmoid component, an empty container.
 PlasmoidItem {
 

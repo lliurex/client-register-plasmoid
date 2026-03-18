@@ -5,6 +5,8 @@
 #include <QProcess>
 #include <QFile>
 #include <QDir>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include <n4d.hpp>
 #include <variant.hpp>
@@ -32,30 +34,23 @@ public:
 
    QString clientRegisterVar="/var/lib/n4d/variables/CONTROLLED_CLASSROOM";
 
-
 signals:
 
     void startWidgetFinished(bool startOk);
     void getWidgetStatusFinished (bool isAvailable, bool isError);
     void getCurrentInfoFinished (bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);
 
-
 private:    
      
-    QString user;
     n4d::Client client;
+    QMutex clientMutex;
     QString natfreeTie="/usr/bin/natfree-tie";
     QString natfreeAdi="/usr/bin/natfree-adi";
 
-    void cleanCache();
-    QString getInstalledVersion();
     bool showWidget();
     QVariantList isClientRegisterAvailable();
     QVariantList getCurrentCart();
-
      
 };
-
-
 
 #endif // PLASMA_CLASSROOM_CONTROL_WIDGET_UTILS_H
