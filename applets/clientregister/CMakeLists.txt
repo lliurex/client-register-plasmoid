@@ -105,4 +105,4 @@ install(FILES "icons/client_register_warning_cart_14.svg"
 install(FILES "icons/client_register_warning_cart_15.svg"
         DESTINATION ${KDE_INSTALL_ICONDIR}/hicolor/scalable/apps/)
 install(FILES "knotifications6/clientregister.notifyrc"
-        DESTINATION ${DATAROOTDIR}/usr/bin/)
+        DESTINATION ${KDE_INSTALL_KNOTIFYRCDIR})
