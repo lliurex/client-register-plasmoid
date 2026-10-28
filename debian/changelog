@@ -1,3 +1,9 @@
+client-register-plasmoid (1.2.4) noble; urgency=medium
+
+  * Improved performance when widget is runing in two or more panels
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 28 Oct 2026 12:36:31 +0100
+
 client-register-plasmoid (1.2.3) noble; urgency=medium
 
   * Fixed Cmake
