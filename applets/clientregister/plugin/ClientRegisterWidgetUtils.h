@@ -8,6 +8,9 @@
 #include <QMutex>
 #include <QMutexLocker>
 
+#include <QFutureWatcher>
+#include <QPair>
+
 #include <n4d.hpp>
 #include <variant.hpp>
 
@@ -22,13 +25,21 @@ class ClientRegisterWidgetUtils : public QObject
 
 
 public:
+
+    static ClientRegisterWidgetUtils& instance(){
+        static ClientRegisterWidgetUtils _instance;
+        return _instance;
+    }
+
+   ClientRegisterWidgetUtils(const ClientRegisterWidgetUtils&)=delete;
+   ClientRegisterWidgetUtils& operator=(const ClientRegisterWidgetUtils&) =delete;
+
    
-
-   ClientRegisterWidgetUtils(QObject *parent = nullptr);
-
    void startWidget();
    void getWidgetStatus();
    void getCurrentInfo();
+   
+   bool requestConnectionTest(bool isManualCheck);
    bool isWifiAlu();
    bool isThereConnectionWithADI();
 
@@ -39,9 +50,23 @@ signals:
     void startWidgetFinished(bool startOk);
     void getWidgetStatusFinished (bool isAvailable, bool isError);
     void getCurrentInfoFinished (bool isEnable, bool isError, bool canCreateWatcher, bool isConnectedWithADI, int currentCart);
+    void connectionTestFinished(bool isWifiAlu, bool connected, bool isManualCheck);
+
+private slots:
+
+    void onConnectionTestFinished();
 
 private:    
-     
+
+    explicit ClientRegisterWidgetUtils();
+
+    bool m_isStarting=false;
+    bool m_isInitialized=false;
+    bool m_isGettingStatus=false;
+    bool m_isGettingInfo=false;
+    bool m_isChecking=false;
+    bool m_isManualChek=false;
+      
     n4d::Client client;
     QMutex clientMutex;
     QString natfreeTie="/usr/bin/natfree-tie";
@@ -50,6 +75,8 @@ private:
     bool showWidget();
     QVariantList isClientRegisterAvailable();
     QVariantList getCurrentCart();
+
+    QFutureWatcher<QPair<bool,bool>>m_connectionWatcher;
      
 };
 

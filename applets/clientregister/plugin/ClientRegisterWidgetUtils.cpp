@@ -17,14 +17,32 @@ using namespace edupals;
 using namespace edupals::variant;
 
 
-ClientRegisterWidgetUtils::ClientRegisterWidgetUtils(QObject *parent)
-    : QObject(parent)
-       
+ClientRegisterWidgetUtils::ClientRegisterWidgetUtils()
+    : QObject(nullptr)
+    , m_isStarting(false)
+    , m_isInitialized(false)
+    , m_isGettingStatus(false)
+    , m_isGettingInfo(false)
+    , m_isChecking(false)
+
 {
+    connect(&m_connectionWatcher,&QFutureWatcher<bool>::finished,this,&ClientRegisterWidgetUtils::onConnectionTestFinished);               
+
   
 }
 
 void ClientRegisterWidgetUtils::startWidget(){
+
+    if (m_isInitialized){
+      emit startWidgetFinished(true);
+      return;
+    }
+
+    if (m_isStarting){
+        return;
+    }
+
+    m_isStarting=true;
 
     QPointer<ClientRegisterWidgetUtils>safeThis(this);
 
@@ -45,6 +63,8 @@ void ClientRegisterWidgetUtils::startWidget(){
         } 
 
         if (safeThis){
+            safeThis->m_isStarting=false;
+            safeThis->m_isInitialized=startOk;
             emit safeThis->startWidgetFinished(startOk);
         }
 
@@ -53,6 +73,12 @@ void ClientRegisterWidgetUtils::startWidget(){
 
 void ClientRegisterWidgetUtils::getWidgetStatus(){
 
+    if (m_isGettingStatus){
+        return;
+    }
+
+    m_isGettingStatus=true;
+    
     QPointer<ClientRegisterWidgetUtils>safeThis(this);
 
     QtConcurrent::run([safeThis]() {
@@ -71,6 +97,7 @@ void ClientRegisterWidgetUtils::getWidgetStatus(){
             isError=result[1].toBool();
         }
         if (safeThis){
+            safeThis->m_isGettingStatus=false;
             emit safeThis->getWidgetStatusFinished(isAvailable, isError);
         }
     });
@@ -124,6 +151,12 @@ QVariantList ClientRegisterWidgetUtils::isClientRegisterAvailable(){
 
 void ClientRegisterWidgetUtils::getCurrentInfo(){
 
+    if (m_isGettingInfo){
+        return;
+    }
+
+    m_isGettingInfo=true;
+    
     QPointer<ClientRegisterWidgetUtils>safeThis(this);
     QString tmpClientVar=this->clientRegisterVar;
 
@@ -159,6 +192,7 @@ void ClientRegisterWidgetUtils::getCurrentInfo(){
             }
         }
         if (safeThis){
+            safeThis->m_isGettingInfo=false;
             emit safeThis->getCurrentInfoFinished(isEnable, isError, canCreateWatcher, isConnectedWithADI, currentCart);
         }
     });
@@ -192,6 +226,44 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
    result.append(isError);
    result.append(numCart);
    return result;
+
+}
+
+bool ClientRegisterWidgetUtils::requestConnectionTest(bool isManualCheck){
+
+    qDebug()<<"PETICION DE TEST";
+    if (m_isChecking){
+        qDebug()<<"OCUPADO";
+        return false;
+    }
+    qDebug()<<"PROCESANDO";
+    m_isChecking=true;
+    m_isManualChek=isManualCheck;
+
+    auto future = QtConcurrent::run([this](){
+
+        bool isWifiAlu=this->isWifiAlu();
+        bool connected=false;
+
+        if (isWifiAlu){
+            connected=this->isThereConnectionWithADI();
+        }
+        return qMakePair(isWifiAlu,connected);
+
+    });
+
+    m_connectionWatcher.setFuture(future);
+    return true;
+}
+
+void ClientRegisterWidgetUtils::onConnectionTestFinished(){
+
+    QPair<bool,bool>results=m_connectionWatcher.result();
+    bool isWifiAlu=results.first;
+    bool connected=results.second;
+    m_isChecking=false;
+
+    emit connectionTestFinished(isWifiAlu,connected,m_isManualChek); 
 
 }
 
