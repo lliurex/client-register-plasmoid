@@ -1,3 +1,9 @@
+client-register-plasmoid (0.3.3) jammy; urgency=medium
+
+  * Improved performance when widget is running in two or more panels
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 28 Oct 2026 12:38:26 +0100
+
 client-register-plasmoid (0.3.2) jammy; urgency=medium
 
   * Changed so that the cache doesn't have to be cleared on startup
