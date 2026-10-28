@@ -231,12 +231,10 @@ QVariantList ClientRegisterWidgetUtils::getCurrentCart(){
 
 bool ClientRegisterWidgetUtils::requestConnectionTest(bool isManualCheck){
 
-    qDebug()<<"PETICION DE TEST";
     if (m_isChecking){
-        qDebug()<<"OCUPADO";
         return false;
     }
-    qDebug()<<"PROCESANDO";
+
     m_isChecking=true;
     m_isManualChek=isManualCheck;
 
