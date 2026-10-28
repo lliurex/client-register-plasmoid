@@ -20,7 +20,7 @@ using namespace edupals::variant;
 
 ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
     : QObject(parent)
-    , m_utils(new ClientRegisterWidgetUtils(this))
+    , m_utils(&ClientRegisterWidgetUtils::instance())
     , m_timer(new QTimer(this))
 
    
@@ -37,7 +37,8 @@ ClientRegisterWidget::ClientRegisterWidget(QObject *parent)
         });
 
     connect(m_utils,&ClientRegisterWidgetUtils::getCurrentInfoFinished,this,&ClientRegisterWidget::getInfoFinished);
-    
+    connect(m_utils,&ClientRegisterWidgetUtils::connectionTestFinished,this,&ClientRegisterWidget::handleConnectionResults);
+
     QTimer::singleShot(0,this,[this](){
         m_utils->startWidget();
 
@@ -129,6 +130,7 @@ void ClientRegisterWidget::getInfoFinished(bool isEnable, bool isError, bool can
             changeTryIconState(0);
             setCanEdit(true);
             setCanTest(true);
+            manualCheckCount=0;
             isWorking=false;
 
         }else{
@@ -223,45 +225,33 @@ void ClientRegisterWidget::testConnection(bool isManualCheck)
     if (checkingConnection){
         return;
     }
+
     checkingConnection = true;
+    setTestInProgress(true);
+    m_utils->requestConnectionTest(isManualCheck);
+}
 
-    QPointer<ClientRegisterWidget>safeThis(this);
+void ClientRegisterWidget::handleConnectionResults(bool isWifiAlu, bool connected, bool isManualCheck){
 
-    QThreadPool::globalInstance()->start([safeThis, isManualCheck]() {
-
-        if (!safeThis){
-            return;
+    if (!isWifiAlu){
+        m_timer->stop();
+        disableApplet();
+    }else{
+        if (connectedWithServer != connected) {
+            connectedWithServer = connected;
+            updateWidgetFeedbak();
         }
-
-        bool isWifi = safeThis->m_utils->isWifiAlu(); 
-        bool connected=false;
-
-        if (isWifi){
-            connected = safeThis->m_utils->isThereConnectionWithADI();
-        }
-    
-        QMetaObject::invokeMethod(safeThis.data(), [safeThis, isWifi, connected, isManualCheck]() {
-            if (!isWifi){
-                safeThis->m_timer->stop();
-                safeThis->disableApplet();
-            }else{
-                if (safeThis->connectedWithServer != connected) {
-                    safeThis->connectedWithServer = connected;
-                    safeThis->updateWidgetFeedbak();
-                }
-            }
-            safeThis->checkingConnection = false;
-            if (!isManualCheck) {
-                safeThis->manualCheckCount = 0;
-                safeThis->setCanTest(true);
-            }
-            safeThis->setTestInProgress(false);
-            
-        },Qt::QueuedConnection);
-    });
+    }
+    checkingConnection = false;
+    if (!isManualCheck) {
+        manualCheckCount = 0;
+        setCanTest(true);
+    }
+    setTestInProgress(false);
 
 }
 
+  
 void ClientRegisterWidget::updateWidgetFeedbak()
 {
     QString cart=QString::number(initCart);
